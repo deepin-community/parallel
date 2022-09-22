@@ -1,0 +1,211 @@
+parallel (20210822+ds-2) unstable; urgency=medium
+
+  * Re-add patch to remove citation option
+  * Do not mention removed options in docs
+
+ -- Andreas Tille <tille@debian.org>  Sat, 28 Aug 2021 20:51:12 +0200
+
+parallel (20210822+ds-1) unstable; urgency=medium
+
+  * New upstream version
+
+  [ Debian Janitor ]
+  * Strip unusual field spacing from debian/control.
+  * Remove 1 obsolete maintscript entry.
+
+  [ Andreas Tille ]
+  * Take over package from Rogerio Brito.  Rogerio, thanks for all your
+    work and RIP
+  * Standards-Version: 4.6.0 (routine-update)
+
+ -- Andreas Tille <tille@debian.org>  Tue, 24 Aug 2021 11:11:08 +0200
+
+parallel (20210322+ds-1~exp0) experimental; urgency=medium
+
+  * Team upload.
+
+  [ Rogério Brito ]
+  * New upstream version 20210322
+    Closes: #887555
+    Closes: #915541 (since version 20180922)
+    Closes: #946955, #785217, #875646, #910470, #930323, #767590
+  * debian/copyright:
+    + Extend my copyright years.
+    + Use source with https prefix.
+    + Add Files-Excluded entries.
+    + Extend upstream copyright years.
+  * debian/{compat,control}: Update to new notation and level 12.
+  * Update my email address.
+  * debian/copyright:
+    + Use secure copyright file specification URI.
+    + use spaces rather than tabs to start continuation lines.
+  * debian/upstream:
+    + signing-key.asc: Re-export upstream signing key without extra signatures.
+    + metadata: Set upstream metadata fields: Bug-Submit (from ./configure),
+      Repository, Repository-Browse.
+  * debian/rules:
+    + Remove get-orig-source target.
+    + Remove redundant targets or calls: override_dh_installchangelogs,
+      dh_install --list-missing, override_dh_auto_install and leftover
+      targets.
+  * debian/control:
+    + Update Vcs-* headers to use salsa repository.
+    + Change priority extra to priority optional.
+    + Bump debhelper from old 12 to 13.
+    + Follow cme's advice remove depends on perl.
+    + Set Rules-Requires-Root to no.
+    + State compliancy with Policy 4.5.1.
+  * Add salsa-ci file (routine-update)
+  * debian/rules:
+    + Disable running the testsuite. Upstream doesn't ship it.
+  * debian/watch:
+    + Use https instead of plain ftp.
+    + watch file standard 4 (routine-update)
+  * debian/parallel.{dirs,install}: Remove redundant files.
+
+  [ Andreas Tille ]
+  * Take over package into Debian Med team
+  * Build-Depends: libreoffice-writer, libpod-pom-view-restructured-perl
+  * Remove debian/gbp.conf
+  * Lintian-override for script-with-language-extension, csh-considered-harmful
+  * Suggests: ash, csh, fish, ksh, tcsh, zsh
+  * Fix Perl interpreter
+  * Debian does not provide pdksh - so do not provide that script
+  * Remove debian/README.source since all is described in Debian Med policy
+
+ -- Andreas Tille <tille@debian.org>  Tue, 06 Apr 2021 11:14:48 +0200
+
+parallel (20161222-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload
+  * Update Vcs-* to point to salsa
+  * Remove citation requirements completely (Closes: #905674)
+
+ -- Didier Raboud <odyx@debian.org>  Sat, 01 Dec 2018 23:18:34 +0100
+
+parallel (20161222-1) unstable; urgency=medium
+
+  [ Rogério Brito ]
+  * New upstream version 20161122.
+    + Fixes CVE-2015-4155 and CVE-2015-4156. (Closes: #787954)
+  * debian/gbp.conf:
+    + Avoid warning by renaming section from git-import-orig to import-orig.
+    + Avoid warning by renaming section from git-dch to dch.
+  * debian/control:
+    + Depend on procps. (Closes: #815952)
+    + Remove conflicts with moreutils. Thanks to Ian Jackson for the
+      suggestion and many others for the discussions.  (Closes: #749355)
+    + Substitute dependency on perl-modules with simple perl.
+    + Fix Vcs-* URLs to point to new, cgit HTTPS locations.
+
+  [ Ondřej Surý ]
+  * Imported Upstream version 20161222 (Closes: #813639)
+
+ -- Ondřej Surý <ondrej@debian.org>  Sat, 31 Dec 2016 14:24:10 +0100
+
+parallel (20141022+ds1-1) unstable; urgency=medium
+
+  [ Michele Orrù ]
+  * debian/rules:
+    + Remove documentation files in dh_clean.
+    + Add get-orig-source target to remove precompiled documentation files.
+
+  [ Rogério Brito ]
+  * Integrate changes from Michele to make the package compilable twice in
+    a row. (Closes: #751508)
+  * Credit Michele Orrù for patches to build twice in a row.
+  * debian/control: Normalize with wrap-and-sort.
+  * debian/control: Verified compliance with Policy version 3.9.6.
+  * Imported Upstream version 20130922+ds1
+  * debian/watch: Deal with version mangling, as we repack the upstream source.
+  * debian/rules: Minor cosmetic indenting.
+  * debian/upstream: Add signing key.
+  * debian/watch: Add mangling of names for upstream signatures.
+  * Imported Upstream version 20141022
+  * Imported Upstream version 20141022+ds1 (Closes: #747217)
+  * debian/control: Add autoconf to Build-Depends.
+  * debian/rules: Disable running the testsuite, as it is not present.
+  * debian/control: Add Depends on sysstat. (Closes: #765036)
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Thu, 30 Oct 2014 20:01:29 -0200
+
+parallel (20130922-1) unstable; urgency=low
+
+  * Imported Upstream version 20130922. (Closes: #724123)
+  * debian/patches: Remove, applied upstream. (Closes: #671006)
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Thu, 03 Oct 2013 01:38:20 -0300
+
+parallel (20130622-1) unstable; urgency=low
+
+  * Imported Upstream version 20130622 (Closes: #697828)
+  * debian/watch:
+    + Track only versions that begin with digits.
+  * debian/copyright:
+    + Update copyright years.
+  * debian/{compat,control}:
+    + Use debhelper compat version 9.
+  * debian/control:
+    + Add Conflicts: against moreutils.
+    + Use canonical URLs for VCS fields.
+  * Adjust for removal of config file under /etc/parallel.
+    (Closes: #671798, #674698, #688929)
+  * debian/patches:
+    + Add patch to fix typo in sql.
+  * debian/NEWS:
+    + Add file describing the removal of the configuration file
+      and its implications.
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Sun, 07 Jul 2013 19:07:20 -0300
+
+parallel (20120422-1) unstable; urgency=low
+
+  * Imported Upstream version 20120422
+  * debian/README.source: Simplify instructions of generation of the package.
+  * Make debian packaging canonizalized using `wrap-and-sort -s -a -v`.
+  * debian/control: Remove Ole from the Uploaders field.
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Tue, 24 Apr 2012 01:56:56 -0300
+
+parallel (20120322-1) unstable; urgency=low
+
+  [ Ole Tange ]
+  * Initial release (Closes: #518696)
+
+  [ Rogério Brito ]
+  * debian/gbp.conf: Add standard configuration.
+  * Add README.source to describe how the package is usually made.
+  * debian/rules: Don't special-case the clean process anymore.
+  * Change the versioning of the package.
+  * Remove build-dependency on dh-autoreconf.
+  * debian/links:
+    + make sem a symlink to parallel.
+  * debian/rules:
+    + Ship upstream's NEWS file as the upstream changelog.
+  * Move to format "3.0 (quilt)".
+  * debian/rules:
+    + don't configure the package in the clean target.
+    + create a configure (and configure-stamp) target.
+  * debian/control:
+    + update debhelper dependency to >= 7.
+    + set myself as maintainer and Ole as uploader.
+  * debian/rules:
+    + use dh(7) style file with autoreconf add-on.
+  * debian/doc-base:
+    + properly register the documentation with doc-base.
+
+  [ Ondřej Surý ]
+  * Add myself to Uploaders
+  * Add a diversion for /usr/bin/parallel to allow concurrent install
+    with moreutils
+  * Install to debian/tmp to allow mangling of the files
+  * Install site-wide config with enabled Tollef's parallel
+    compatibility option
+  * Add ${perl:Depends} to debian/control
+  * Install only HTML documentation
+  * Add --list-missing to dh_install to check if we got everything
+  * Install upstream README file
+  * Remove --id-length from git-dch, it only makes Debian changelog
+    harder to read
+
+ -- Ondřej Surý <ondrej@debian.org>  Thu, 12 Apr 2012 11:04:40 +0200

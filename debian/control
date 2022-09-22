@@ -1,0 +1,45 @@
+Source: parallel
+Section: utils
+Priority: optional
+Maintainer: Debian Med Packaging Team <debian-med-packaging@lists.alioth.debian.org>
+Uploaders: Andreas Tille <tille@debian.org>,
+           Ondřej Surý <ondrej@debian.org>
+Build-Depends:
+ autoconf,
+ debhelper-compat (= 13),
+ perl,
+ pod2pdf,
+ libpod-pom-view-restructured-perl,
+ texinfo,
+ libreoffice-writer
+Rules-Requires-Root: no
+Standards-Version: 4.6.0
+Homepage: https://www.gnu.org/software/parallel/
+Vcs-Git: https://salsa.debian.org/med-team/parallel.git
+Vcs-Browser: https://salsa.debian.org/med-team/parallel
+
+Package: parallel
+Architecture: all
+Depends:
+ procps,
+ sysstat,
+ ${misc:Depends},
+ ${perl:Depends}
+Suggests: ash, csh, fish, ksh, tcsh, zsh
+Description: build and execute command lines from standard input in parallel
+ GNU Parallel is a shell tool for executing jobs in parallel using one
+ or more machines. A job is typically a single command or a small
+ script that has to be run for each of the lines in the input. The
+ typical input is a list of files, a list of hosts, a list of users, or
+ a list of tables.
+ .
+ If you use xargs today you will find GNU Parallel very easy to use. If
+ you write loops in shell, you will find GNU Parallel may be able to
+ replace most of the loops and make them run faster by running jobs in
+ parallel. If you use ppss or pexec you will find GNU Parallel will
+ often make the command easier to read.
+ .
+ GNU Parallel also makes sure output from the commands is the same
+ output as you would get had you run the commands sequentially. This
+ makes it possible to use output from GNU Parallel as input for other
+ programs.

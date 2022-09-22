@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	echo "Upstream does not provide test suite"
+endif
+
+override_dh_install:
+	dh_install
+	for pl in `grep -Rl '#!/usr/bin/env[[:space:]]\+perl' debian/*/usr/*` ; do \
+	    sed -i '1s?^#!/usr/bin/env[[:space:]]\+perl?#!/usr/bin/perl?' $${pl} ; \
+	done
+	find debian -name env_parallel.pdksh -delete
