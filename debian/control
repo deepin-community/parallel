@@ -11,9 +11,11 @@ Build-Depends:
  pod2pdf,
  libpod-pom-view-restructured-perl,
  texinfo,
- libreoffice-writer
+ libreoffice-writer-nogui,
+ libreoffice-core,
+ graphviz
 Rules-Requires-Root: no
-Standards-Version: 4.6.0
+Standards-Version: 4.6.2
 Homepage: https://www.gnu.org/software/parallel/
 Vcs-Git: https://salsa.debian.org/med-team/parallel.git
 Vcs-Browser: https://salsa.debian.org/med-team/parallel
@@ -25,7 +27,7 @@ Depends:
  sysstat,
  ${misc:Depends},
  ${perl:Depends}
-Suggests: ash, csh, fish, ksh, tcsh, zsh
+Suggests: csh, fish, ksh, tcsh, zsh
 Description: build and execute command lines from standard input in parallel
  GNU Parallel is a shell tool for executing jobs in parallel using one
  or more machines. A job is typically a single command or a small

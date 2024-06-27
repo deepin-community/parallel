@@ -1,3 +1,61 @@
+parallel (20240222+ds-2) unstable; urgency=medium
+
+  * Team upload.
+  * d/control: build-dep on graphviz for neato.
+  * d/pod2rst-fix: copy from upstream, it is missing from the
+    distribution archive. Fixes empty .rst docs.
+
+ -- Michael R. Crusoe <crusoe@debian.org>  Fri, 22 Mar 2024 17:18:57 +0100
+
+parallel (20240222+ds-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version. Closes: #1067396
+  * Refreshed patches.
+
+ -- Michael R. Crusoe <crusoe@debian.org>  Thu, 21 Mar 2024 12:48:22 +0100
+
+parallel (20231122+ds-1) unstable; urgency=medium
+
+  * New upstream version
+  * Build-Depends: libreoffice-core
+    Closes: #1058555
+
+ -- Andreas Tille <tille@debian.org>  Thu, 14 Dec 2023 11:43:59 +0100
+
+parallel (20221122+ds-2) unstable; urgency=medium
+
+  [ наб ]
+  * Revert "Suggests: ash"
+    Closes: #1026096
+
+  [ Andreas Tille ]
+  * Standards-Version: 4.6.2 (routine-update)
+  * Do not install env_parallel.ash into target package
+
+ -- Andreas Tille <tille@debian.org>  Sun, 18 Dec 2022 14:36:50 +0100
+
+parallel (20221122+ds-1) unstable; urgency=medium
+
+  * New upstream version
+  * Build-Depends: s/libreoffice-writer/libreoffice-writer-nogui/
+    Closes: #1024841
+
+ -- Andreas Tille <tille@debian.org>  Sat, 26 Nov 2022 18:01:37 +0100
+
+parallel (20220722+ds-1) unstable; urgency=medium
+
+  * New upstream version
+  * Add citation
+  * Standards-Version: 4.6.1 (routine-update)
+  * Update citation patch.  Noted that upstream added
+     You accept to be put in a public hall of shame by removing these lines.
+    comments but I do not think that those statements invalidate the permission
+    to change the code that is granted by GPL.
+  * Suggests: ash
+
+ -- Andreas Tille <tille@debian.org>  Wed, 27 Jul 2022 11:26:27 +0200
+
 parallel (20210822+ds-2) unstable; urgency=medium
 
   * Re-add patch to remove citation option

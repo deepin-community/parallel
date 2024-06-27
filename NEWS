@@ -1,3 +1,541 @@
+20240222
+
+New in this release:
+
+* No new functionality
+
+* Bug fixes and man page updates.
+
+
+20240122
+
+New in this release:
+
+* --sshlogin supports ranges: server[01-12,15] 10.0.[1-10].[2-254]
+
+* --plus enables {slot-1} and {seq-1} = {%}-1 and {#}-1 to count from 0.
+
+* env_parallel.{sh,ash,dash,bash,ksh,zsh} is now the same script.
+
+* Bug fixes and man page updates.
+
+
+20231222
+
+New in this release:
+
+* --combine-exec combines GNU Parallel with any executable.
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* The first GNU Parallel video that seems to be completely AI
+  generated: https://www.youtube.com/watch?v=Ie8eAhlEHOg
+
+* GNU Parallel and “fail immediately if any fails” problem
+  https://antiarchitect.medium.com/gnu-parallel-and-fail-immediately-if-any-fails-problem-481ddea690ba
+
+
+20231122
+
+New in this release:
+
+* -a file1 -a +file2 will link file2 to file1 similar to ::::+
+
+* --bar shows total time when all jobs are done.
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* Using GNU Parallel in bash scripts to optimize python processes
+  https://climate-cms.org/posts/2023-11-02-gnu-parallel.html
+
+
+20231022
+
+New in this release:
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* Resume long parallel jobs
+  https://ginolhac.github.io/posts/2023-10-02_resume-parallel/index.html
+
+* Efficiency and Speed with GNU Parallel
+  https://dev.to/0xog_pg/efficiency-and-speed-with-gnu-parallel-loo
+
+
+20230922
+
+New in this release:
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* This CLI Tool is AMAZING | Prime Reacts
+  https://www.youtube.com/watch?v=ry49BZA-tgg
+
+* New Data Engineering Stack - GNU parallel
+  https://www.linkedin.com/feed/update/urn:li:activity:7100509073149743104?updateEntityUrn=urn%3Ali%3Afs_feedUpdate%3A%28V2%2Curn%3Ali%3Aactivity%3A7100509073149743104%29
+
+
+20230822
+
+New in this release:
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* GNU Parallel, where have you been all my life?
+  https://alexplescan.com/posts/2023/08/20/gnu-parallel/
+
+* Parallel (multithreaded) music download from Youtube
+  https://hrna.moe/?p=parallel-multithread-music-download
+
+
+20230722
+
+New in this release:
+
+* Time functions (e.g. yyyymmdd($secs) ) can now take secs since epoch as argument.
+
+* Bug fixes and man page updates.
+
+
+20230622
+
+New in this release:
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* Run faster in the terminal with Gnu Parallel https://www.youtube.com/watch?v=fSYVYsKXWP0
+
+* Building an (Evil) Android Phone Bot Army http://blog.faucher.net/2023/05/building-evil-android-phone-bot-army.html
+
+
+20230522
+
+New in this release:
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* Introduction to parallel computing https://youtu.be/fvrHXV8yqU4?t=2874
+
+* Script for summarizing GNU parallel joblog file https://github.com/gavinmdouglas/parallel_joblog_summary
+
+* How to copy a single file to multiple directories in Linux or Unix https://www.cyberciti.biz/faq/linux-unix-copy-a-file-to-multiple-directories-using-cp-command/
+
+* Search in your Jupyter notebooks from the CLI, fast. https://dev.to/attilavm/search-in-your-jupyter-notebooks-from-the-cli-fast-1408
+
+* Parallel Job Orchestration with GNU Parallel https://www.youtube.com/watch?v=2tVpUfND3LI
+
+* Optional Individual Submission 4 Job Handling 20266001 - GNU Parallel https://www.youtube.com/watch?v=eC_RPuFCcU8
+
+* DOE Cross-facility Workflows Training - April 12, 2023 https://www.youtube.com/watch?v=Ke3sirM-aQQ
+
+* How to run MiXCR 4.x on multiple patient samples using GNU Parallel https://www.youtube.com/watch?v=OXg-WHlB_dk
+
+
+20230422
+
+New in this release:
+
+* --jobs evaluates expression: +3*log(55)% = ncpu*1.12
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* Running shell script in parallel
+  https://w3toppers.com/running-shell-script-in-parallel/
+
+* Simulating climate risk scenarios for the Amazon Rainforest
+  https://aws.amazon.com/blogs/hpc/simulating-climate-risk-scenarios-for-the-amazon-rainforest/
+
+* How To Use Your Entire CPU In Bash With Parallel
+  https://bash-prompt.net/guides/parallell-bash/
+
+* Bash - parallel command execution
+  https://medium.com/linuxstories/bash-parallel-command-execution-d4bd7c7cc1d6
+
+* 3 tips for faster batch post-pro
+  https://www.cfdengine.com/newsletter/142/
+
+
+20230322
+
+New in this release:
+
+* Better support for wide characters in --latest-line.
+
+* Support for rsync 3.2.7.
+
+* Bug fixes and man page updates.
+
+
+20230222
+
+New in this release:
+
+* parsort: --parallel now does closer to what you expect.
+
+* parallel: --files0 is --files but \0 separated.
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* 5 great Perl scripts to keep in your sysadmin toolbox
+  https://www.redhat.com/sysadmin/perl-scripts
+
+
+20230122
+
+New in this release:
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* The Best Ethical Hacking Tools of 2023 (and their basic usage)
+  https://www.purevpn.com/blog/the-best-hacking-tools-of-2023/#11_GNU_Parallel
+
+* GNU Parallel: criando atividades em paralelo com shell script
+  https://www.vivaolinux.com.br/artigo/GNU-Parallel-criando-atividades-em-paralelo-com-shell-script/
+
+
+20221222
+
+New in this release:
+
+* --results works on more file systems (e.g. fat)
+
+* Joblog gives the same exit code as bash.
+
+News about GNU Parallel:
+
+* Programação Shell Linux: Paralelismo de processos com GNU parallel
+  https://www.youtube.com/watch?v=duheTWLIrp8
+
+* Talk Python: Data Science from the Command Line
+  https://talkpython.fm/episodes/show/392/data-science-from-the-command-line
+
+
+20221122
+
+New in this release:
+
+* Support for IPv6 adresses and _ in hostnames in --sshlogin.
+
+* Use --total-jobs for --eta/--bar if generating jobs is slow.
+
+* A lot of bugs fixed in --latest-line.
+
+* Better support for MSYS2.
+
+* Better Text::CSV error messages.
+
+* --bar supports UTF8.
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* GNU Parallel is now on Mastodon: @GNU_Parallel@hostux.social
+
+
+20221022
+
+New in this release:
+
+* --latest-line chops line length at terminal width.
+
+* Determine max command length faster on Microsoft Windows.
+
+News about GNU Parallel:
+
+* Distributed Task Processing with GNU Parallel
+  https://www.youtube.com/watch?v=usbMLggdMgc
+
+* GNU Parallel workflow for many small, independent runs
+  https://docs.csc.fi/support/tutorials/many/
+
+* Copy a File To Multiple Directories With A Single Command on Linux
+  https://www.linuxfordevices.com/tutorials/linux/copy-file-to-multiple-directories-with-one-command
+
+* Behind The Scenes: The Power Of Simple Command Line Tools At Cloud
+  Scale
+  https://blog.gdeltproject.org/behind-the-scenes-the-power-of-simple-command-line-tools-at-cloud-scale/
+
+* Run lz4 compression in parallel using GNU parallel
+  https://www.openguru.com/2022/09/
+
+* Xargs / Parallel With Code Examples
+  https://www.folkstalk.com/2022/09/xargs-parallel-with-code-examples.html
+
+* Parallel processing on a single node with GNU Parallel
+  https://www3.cs.stonybrook.edu/~cse416/Section01/Slides/SeaWulfIntro_CSE416_09222022.pdf
+
+* Using GNU parallel painlessly -- from basics to bioinformatics job
+  orchestration https://www.youtube.com/watch?v=qypUdm-IE9c
+
+
+20220922
+
+New in this release:
+
+* --colour-failed only changes output for failing jobs.
+
+* Password for --sshlogin can be put in $SSHPASS.
+
+* Examples are moved from `man parallel` to `man parallel_examples`.
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* WOMM - Works On My Machine uses GNU Parallel https://pypi.org/project/womm/
+
+
+20220822
+
+New in this release:
+
+* --header 0 allows using {filename} as replacement string
+
+* Bug fixes and man page updates.
+
+
+20220722
+
+New in this release:
+
+* --colour-failed will color output red if the job fails.
+
+* sql: support for InfluxDB.
+
+* Polarhome.com is dead, so these OSs are no longer supported: AIX
+  HPUX IRIX Minix OPENSTEP OpenIndiana OpenServer QNX Solaris Syllable
+  Tru64 Ultrix UnixWare.
+
+* Bug fixes and man page updates.
+
+
+20220622
+
+New in this release:
+
+* , can be used in --sshlogin if quoted as \, or ,,
+
+* --plus {/#regexp/str} replace ^regexp with str.
+
+* --plus {/%regexp/str} replace regexp$ with str.
+
+* --plus {//regexp/str} replace every regexp with str.
+
+* 'make install' installs bash+zsh completion files.
+
+* Bug fixes and man page updates.
+
+
+20220522
+
+New in this release:
+
+* --latest-line shows only the latest line of running jobs.
+
+* --color colors output in different colors per job (this obsoletes --ctag).
+
+* xargs compatibility: --process-slot-var foo sets $foo to jobslot-1.
+
+* xargs compatibility: --open-tty opens the terminal on stdin (standard input).
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* Building a fault-tolerant work queue for command-line executions
+  with GNU Parallel https://www.jvt.me/posts/2022/04/28/shell-queue/
+
+* Make your code do more, with less
+  https://www.blopig.com/blog/2022/05/make-your-code-do-more-with-less/
+
+* W09 B IntroHPC II 20220513 gnu parallel
+  https://www.youtube.com/watch?v=2udvC90rIa4
+
+
+20220422
+
+New in this release:
+
+* sash is no longer supported as shell.
+
+* --retries 0 is an alias for --retries 2147483647.
+
+* --shell-completion returns shell completion code.
+
+* --ssh-login-file reloads every second.
+
+* --parset is replaced with --_parset because it is only used internally.
+
+* sem --pipe passes STDIN (standard input) to the command.
+
+* Bug fixes and man page updates.
+
+
+20220322
+
+New in this release:
+
+* --sshlogin user:password@host is now supported by using sshpass.
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* Bash: GNU Parallel with Curl
+  https://gist.github.com/CMCDragonkai/5914e02df62137e47f32?permalink_comment_id=2617456
+
+* The Pipe Operator Explained
+  https://medium.com/geekculture/the-pipe-operator-explained-cbd41e23775a
+
+
+20220222
+
+New in this release:
+
+* Encoding of remote commands has changed. This limits the length of
+  remote commands to less than half. It also requires $REMOTE_TMPDIR
+  to be writable. It makes this release beta quality.
+
+* Time functions hh_mm_ss() hhmmss() hh_mm() hhmm() are now available
+  for {= =}.
+
+* Many options in the man page for parallel now has 'see also' for
+  related options.
+
+* parallel_options_map.pdf is a map showing which options other
+  options relate to.
+
+* {uniq} added to --plus to only run jobs with unique values.
+
+* sem --fg exits with the exit code of the job.
+
+* Bug fixes and man page updates.
+
+
+20220122
+
+New in this release:
+
+* GNU Parallel turned 20 on the 2022-01-06
+  https://www.gnu.org/software/parallel/20th-birthday.html
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* Save Time with Modern Search Techniques
+  https://www.eventbrite.com/e/ohio-information-security-forum-january-2022-monthly-meeting-tickets-240632737997
+
+* Bash "Fail immediately if any fails"
+  https://morioh.com/p/a01b883dc57c
+
+* Re-encoding the EmacsConf videos with FFmpeg and GNU Parallel
+  https://sachachua.com/blog/2021/12/re-encoding-the-emacsconf-videos-with-ffmpeg-and-gnu-parallel/
+
+* Bash 平行 https://learntutorials.net/ja/bash/topic/10778/%E5%B9%B3%E8%A1%8C
+
+
+20211222
+
+New in this release:
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* The first version of Parallel will be 20 years on 2022-01-06
+
+* HerrComp Intro HPC gnu parallel
+  https://www.youtube.com/watch?v=tcgjKWfgWQY
+
+* 多数のファイルを処理する場合の工夫
+  https://qiita.com/toramili/items/44a770cfb9ef1edc9e26
+
+* How To Install parallel on Ubuntu 20.04
+  https://installati.one/ubuntu/20.04/parallel/
+
+* Distributing embarrassingly parallel tasks GNU Parallel
+  https://ulhpc-tutorials.readthedocs.io/en/latest/sequential/gnu-parallel/
+
+
+20211122
+
+New in this release:
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* Otimizando o seu Hacking com o GNU Parallel - Mateus Buogo
+  https://www.youtube.com/watch?v=xIpPPZXDKGU
+
+* SMACK 12 - Do it faster! Simple ways to use all those cores (and
+  GPUs) efficiently. https://www.youtube.com/watch?v=lXDGY7NvOYk
+
+
+20211022
+
+New in this release:
+
+* Don't postpone output until $jobslots jobs have been started.
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* How to Install GNU Parallel using Anaconda | Linux
+  https://www.youtube.com/watch?v=UwDNVP-L0qA
+
+* Install GNU Parallel from source code | Linux
+  https://www.youtube.com/watch?v=PIyJH4ben5o
+
+* Compiling GNU Parallel on CentOS-7
+  https://thelinuxcluster.com/2021/10/19/compiling-gnu-parallel-on-centos-7/
+
+
+20210922
+
+New in this release:
+
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* 3 Programs that will Level Up your Bash Game
+  https://medium.com/codex/3-programs-that-will-level-up-your-bash-game-bf14e17e2291
+
+* I Summarized 100+ Command-Line Tools for Data Scientists in 15
+  Minutes
+  https://towardsdatascience.com/i-summarized-100-command-line-tools-for-data-scientists-in-15-minutes-976def544ffe
+
+* Speed up Your Builds by Parallelizing
+  https://www.incredibuild.com/blog/speed-up-your-builds-by-parallelizing
+
+* Bash: GNU Parallel with Curl
+  https://gist.github.com/dinh/93b936a55de9a331199d6582bc2921d2
+
+
 20210822
 
 New in this release:
@@ -2914,7 +3452,7 @@ New in this release:
 
 20140922
 
-* If the file give as --sshloginfile is changed it will be re-read
+* If the file given as --sshloginfile is changed it will be re-read
   when a job finishes though at most once per second. This makes it
   possible to add and remove hosts while running.
 
@@ -3609,7 +4147,8 @@ New in this release:
   pretty cool!
 
 * GNU Parallel was used (unfortunately with improper citation) in:
-  Understanding the Impact of E-Commerce Software on the Adoption of Structured Data on the Web
+  Understanding the Impact of E-Commerce Software on the Adoption of
+  Structured Data on the Web
   http://link.springer.com/chapter/10.1007/978-3-642-38366-3_9#page-1
 
 * GNU Parallel was used (unfortunately with improper citation) in:
