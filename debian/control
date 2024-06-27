@@ -9,10 +9,7 @@ Build-Depends:
  debhelper-compat (= 13),
  perl,
  pod2pdf,
- libpod-pom-view-restructured-perl,
  texinfo,
- libreoffice-writer-nogui,
- libreoffice-core,
  graphviz
 Rules-Requires-Root: no
 Standards-Version: 4.6.2

@@ -410,57 +410,51 @@ Output (the order may be different):
 GNU B<parallel> has several replacement strings. If no replacement
 strings are used the default is to append B<{}>:
 
-  parallel echo ::: dir/file.ext dir2/file2.ext2
+  parallel echo ::: A/B.C
 
 Output:
 
-  dir/file.ext
-  dir2/file2.ext2
+  A/B.C
 
 The default replacement string is B<{}>:
 
-  parallel echo {} ::: dir/file.ext dir2/file2.ext2
+  parallel echo {} ::: A/B.C
 
 Output:
 
-  dir/file.ext
-  dir2/file2.ext2
+  A/B.C
 
 The replacement string B<{.}> removes the extension:
 
-  parallel echo {.} ::: dir/file.ext dir2/file2.ext2
+  parallel echo {.} ::: A/B.C
 
 Output:
 
-  dir/file
-  dir2/file2
+  A/B
 
 The replacement string B<{/}> removes the path:
 
-  parallel echo {/} ::: dir/file.ext dir2/file2.ext2
+  parallel echo {/} ::: A/B.C
 
 Output:
 
-  file.ext
-  file2.ext2
+  B.C
 
 The replacement string B<{//}> keeps only the path:
 
-  parallel echo {//} ::: dir/file.ext dir2/file2.ext2
+  parallel echo {//} ::: A/B.C
 
 Output:
 
-  dir
-  dir2
+  A
 
 The replacement string B<{/.}> removes the path and the extension:
 
-  parallel echo {/.} ::: dir/file.ext dir2/file2.ext2
+  parallel echo {/.} ::: A/B.C
 
 Output:
 
-  file
-  file2
+  B
 
 The replacement string B<{#}> gives the job number:
 

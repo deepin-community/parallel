@@ -1,8 +1,48 @@
-20240222
+20240622
 
 New in this release:
 
-* No new functionality
+* Bug fixes and man page updates.
+
+News about GNU Parallel:
+
+* Howto - Parallel: lanciare comandi in simultanea https://github.com/linuxhubit/linuxhub.it/blob/main/_posts/2024-06-14-howto-parallel-per-lanciare-comandi-in-simultanea.md
+
+* Implementing Concurrency in Shell Scripts https://dev.to/siddhantkcode/implementing-concurrency-in-shell-scripts-521o
+
+
+20240522
+
+New in this release:
+
+* --onall now supports sshpass - user:pass@host.
+
+* --memfree kills do not count as --retries.
+
+* Bug fixes and man page updates.
+
+
+20240422
+
+New in this release:
+
+* Bug fixes and man page updates.
+
+
+20240322
+
+New in this release:
+
+* Polarhome.com is down for good. This means that only platforms that
+  can be run in Vagrant 2.3.7 on x86-64 will be supported going
+  forward.
+
+* Bug fixes and man page updates.
+
+
+20240222
+
+New in this release:
 
 * Bug fixes and man page updates.
 

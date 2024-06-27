@@ -676,16 +676,6 @@ The behaviour of B<{choose_k}> is undefined, if the input values of each
 source are different.
 
 
-=head2 EXAMPLE: Which git branches are the most similar
-
-If you have a ton of branches in git, it may be useful to see how
-similar the branches are. This gives a rough estimate:
-
-  parallel --trim rl --plus --tag 'git diff {choose_k} | wc -c' \
-    :::: <(git branch | grep -v '*')  <(git branch | grep -v '*') |
-    sort -k3n
-
-
 =head2 EXAMPLE: From a to b and b to c
 
 Assume you have input like:
