@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# SPDX-FileCopyrightText: 2021 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
+# SPDX-FileCopyrightText: 2021-2024 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
 # SPDX-License-Identifier: GFDL-1.3-or-later
 # SPDX-License-Identifier: CC-BY-SA-4.0
 
@@ -114,6 +114,13 @@ See also B<--use-cpus-instead-of-cores>.
 Read parameter from file. Use the content of I<procfile> as parameter
 for I<-j>. E.g. I<procfile> could contain the string 100% or +2 or
 10.
+
+
+=item B<--pipe>
+
+Pass stdin (standard input) to I<command>.
+
+If I<command> read from stdin (standard input), use B<--pipe>.
 
 
 =item B<--semaphorename> I<name>
@@ -248,7 +255,7 @@ Report bugs to <bug-parallel@gnu.org>.
 
 =head1 AUTHOR
 
-Copyright (C) 2010-2021 Ole Tange, http://ole.tange.dk and Free
+Copyright (C) 2010-2024 Ole Tange, http://ole.tange.dk and Free
 Software Foundation, Inc.
 
 

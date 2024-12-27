@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (C) 2016-2021 Ole Tange, http://ole.tange.dk and Free
+# Copyright (C) 2016-2024 Ole Tange, http://ole.tange.dk and Free
 # Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # or write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301 USA
 #
-# SPDX-FileCopyrightText: 2021 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
+# SPDX-FileCopyrightText: 2021-2024 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 grepq() {
@@ -79,6 +79,7 @@ done
 
 
 cat <<'_EOS'
+
 parset only works if it is a function. The function is defined as part
 of env_parallel.
 
@@ -121,6 +122,16 @@ tcsh:  Unsupported
 To install in all shells run:
 
   parset --install
+
+In a script you need to run this before using parset:
+
+bash:  . `which env_parallel.bash`
+ksh:   source `which env_parallel.ksh`
+mksh:  source `which env_parallel.mksh`
+pdksh: source `which env_parallel.pdksh`
+zsh:   . `which env_parallel.zsh`
+ash:   . `which env_parallel.ash`
+dash:  . `which env_parallel.dash`
 
 For details: see  man parset
 

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2002-2021 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
+# SPDX-FileCopyrightText: 2002-2024 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -8,31 +8,57 @@ bin_SCRIPTS = parallel sql niceload parcat parset parsort	\
 	env_parallel.ksh env_parallel.mksh env_parallel.pdksh	\
 	env_parallel.sh env_parallel.tcsh env_parallel.zsh
 
+POD_FILES = parcat.pod parset.pod sem.pod parallel.pod			\
+	env_parallel.pod niceload.pod parallel_examples.pod		\
+	parallel_tutorial.pod parallel_book.pod parallel_design.pod	\
+	parallel_alternatives.pod
+
+MAN_FILES = parallel.1 env_parallel.1 sem.1 sql.1 niceload.1		\
+	parallel_examples.7 parallel_tutorial.7 parallel_book.7		\
+	parallel_design.7 parallel_alternatives.7 parcat.1 parset.1	\
+	parsort.1
+
+PDF_MAN = parallel.pdf env_parallel.pdf sem.pdf sql.pdf		\
+	niceload.pdf parallel_examples.pdf parallel_tutorial.pdf	\
+	parallel_book.pdf parallel_design.pdf				\
+	parallel_alternatives.pdf parcat.pdf parset.pdf parsort.pdf
+
+PDF_OTHER = parallel_cheat_bw.pdf parallel_options_map.pdf
+
+PDF_FILES = $(PDF_MAN) $(PDF_OTHER)
+
+RST_FILES = parallel.rst env_parallel.rst sem.rst sql.rst		\
+	niceload.rst parallel_examples.rst parallel_tutorial.rst	\
+	parallel_book.rst parallel_design.rst				\
+	parallel_alternatives.rst parcat.rst parset.rst parsort.rst
+
+TEXI_FILES = parallel.texi env_parallel.texi sem.texi sql.texi		\
+	niceload.texi parallel_examples.texi parallel_tutorial.texi	\
+	parallel_book.texi parallel_design.texi				\
+	parallel_alternatives.texi parcat.texi parset.texi		\
+	parsort.texi
+
+HTML_FILES = parallel.html env_parallel.html sem.html sql.html		\
+	niceload.html parallel_examples.html parallel_tutorial.html	\
+	parallel_book.html parallel_design.html				\
+	parallel_alternatives.html parcat.html parset.html		\
+	parsort.html
+
 install-exec-hook:
 	rm "$(DESTDIR)$(bindir)"/sem || true
 	$(LN_S) parallel "$(DESTDIR)$(bindir)"/sem
 
 if DOCUMENTATION
-man_MANS = parallel.1 env_parallel.1 sem.1 sql.1 niceload.1	\
-	parallel_tutorial.7 parallel_book.7 parallel_design.7	\
-	parallel_alternatives.7 parcat.1 parset.1 parsort.1
-doc_DATA = parallel.html env_parallel.html sem.html sql.html		\
-	niceload.html parallel_tutorial.html parallel_book.html		\
-	parallel_design.html parallel_alternatives.html parcat.html	\
-	parset.html parsort.html \
-        parallel.texi env_parallel.texi sem.texi sql.texi		\
-	niceload.texi parallel_tutorial.texi parallel_book.texi		\
-	parallel_design.texi parallel_alternatives.texi parcat.texi	\
-	parset.texi parsort.texi \
-        parallel.rst env_parallel.rst sem.rst sql.rst 			\
-	niceload.rst parallel_tutorial.rst parallel_book.rst		\
-	parallel_design.rst parallel_alternatives.rst parcat.rst	\
-	parset.rst parsort.rst \
-	parallel.pdf env_parallel.pdf sem.pdf sql.pdf niceload.pdf	\
-	parallel_tutorial.pdf parallel_book.pdf parallel_design.pdf	\
-	parallel_alternatives.pdf parcat.pdf parset.pdf	parsort.pdf 	\
-	parallel_cheat_bw.pdf
+man_MANS = $(MAN_FILES)
+doc_DATA = $(HTML_FILES) $(TEXI_FILES) $(RST_FILES) $(PDF_FILES)
 endif
+
+DISTCLEANFILES = $(MAN_FILES) $(HTML_FILES) $(TEXI_FILES)	\
+	$(RST_FILES) $(PDF_FILES)
+
+
+EXTRA_DIST = $(bin_SCRIPTS) sem $(POD_FILES) \
+	parallel_cheat_bw.fodt pod2graph $(DISTCLEANFILES)
 
 web: sphinx
 	true
@@ -53,6 +79,12 @@ env_parallel.1: env_parallel.pod
 		--section=1 "$(srcdir)"/env_parallel.pod > "$(srcdir)"/env_parallel.1n \
 	&& mv "$(srcdir)"/env_parallel.1n "$(srcdir)"/env_parallel.1 \
 	|| echo "Warning: pod2man not found. Using old env_parallel.1"
+
+parallel_examples.7: parallel_examples.pod
+	pod2man --release='$(PACKAGE_VERSION)' --center='$(PACKAGE_NAME)' \
+		--section=7 "$(srcdir)"/parallel_examples.pod > "$(srcdir)"/parallel_examples.7n \
+	&& mv "$(srcdir)"/parallel_examples.7n "$(srcdir)"/parallel_examples.7 \
+	|| echo "Warning: pod2man not found. Using old parallel_examples.7"
 
 parallel_tutorial.7: parallel_tutorial.pod
 	pod2man --release='$(PACKAGE_VERSION)' --center='$(PACKAGE_NAME)' \
@@ -128,7 +160,14 @@ env_parallel.html: env_parallel.pod parallel.html
 	rm -f "$(srcdir)"/pod2htm*
 
 # Depending on env_parallel.html to avoid stupid pod2html race condition
-parallel_tutorial.html: parallel_tutorial.pod env_parallel.html
+parallel_examples.html: parallel_examples.pod env_parallel.html
+	pod2html --title "GNU Parallel examples" "$(srcdir)"/parallel_examples.pod > "$(srcdir)"/parallel_examples.htmln \
+	&& mv "$(srcdir)"/parallel_examples.htmln "$(srcdir)"/parallel_examples.html \
+	|| echo "Warning: pod2html not found. Using old parallel_examples.html"
+	rm -f "$(srcdir)"/pod2htm*
+
+# Depending on parallel_examples.html to avoid stupid pod2html race condition
+parallel_tutorial.html: parallel_tutorial.pod parallel_examples.html
 	pod2html --title "GNU Parallel tutorial" "$(srcdir)"/parallel_tutorial.pod > "$(srcdir)"/parallel_tutorial.htmln \
 	&& mv "$(srcdir)"/parallel_tutorial.htmln "$(srcdir)"/parallel_tutorial.html \
 	|| echo "Warning: pod2html not found. Using old parallel_tutorial.html"
@@ -205,6 +244,10 @@ env_parallel.texi: env_parallel.pod
 	pod2texi --output="$(srcdir)"/env_parallel.texi "$(srcdir)"/env_parallel.pod \
 	|| echo "Warning: pod2texi not found. Using old env_parallel.texi"
 
+parallel_examples.texi: parallel_examples.pod
+	pod2texi --output="$(srcdir)"/parallel_examples.texi "$(srcdir)"/parallel_examples.pod \
+	|| echo "Warning: pod2texi not found. Using old parallel_examples.texi"
+
 parallel_tutorial.texi: parallel_tutorial.pod
 	pod2texi --output="$(srcdir)"/parallel_tutorial.texi "$(srcdir)"/parallel_tutorial.pod \
 	|| echo "Warning: pod2texi not found. Using old parallel_tutorial.texi"
@@ -246,51 +289,55 @@ parsort.texi: parsort
 	|| echo "Warning: pod2texi not found. Using old parsort.texi"
 
 parallel.rst: parallel.pod
-	pod2rst --outfile "$(srcdir)"/parallel.rst --infile="$(srcdir)"/parallel.pod \
+	./pod2rst-fix < "$(srcdir)"/parallel.pod > "$(srcdir)"/parallel.rst \
 	|| echo "Warning: pod2rst not found. Using old parallel.rst"
 
 env_parallel.rst: env_parallel.pod
-	pod2rst --outfile "$(srcdir)"/env_parallel.rst --infile="$(srcdir)"/env_parallel.pod \
+	./pod2rst-fix < "$(srcdir)"/env_parallel.pod > "$(srcdir)"/env_parallel.rst \
 	|| echo "Warning: pod2rst not found. Using old env_parallel.rst"
 
+parallel_examples.rst: parallel_examples.pod
+	./pod2rst-fix < "$(srcdir)"/parallel_examples.pod > "$(srcdir)"/parallel_examples.rst \
+	|| echo "Warning: pod2rst not found. Using old parallel_examples.rst"
+
 parallel_tutorial.rst: parallel_tutorial.pod
-	pod2rst --outfile "$(srcdir)"/parallel_tutorial.rst --infile="$(srcdir)"/parallel_tutorial.pod \
+	./pod2rst-fix < "$(srcdir)"/parallel_tutorial.pod > "$(srcdir)"/parallel_tutorial.rst \
 	|| echo "Warning: pod2rst not found. Using old parallel_tutorial.rst"
 
 parallel_book.rst: parallel_book.pod
-	pod2rst --outfile "$(srcdir)"/parallel_book.rst --infile="$(srcdir)"/parallel_book.pod \
+	./pod2rst-fix < "$(srcdir)"/parallel_book.pod > "$(srcdir)"/parallel_book.rst \
 	|| echo "Warning: pod2rst not found. Using old parallel_book.rst"
 
 parallel_design.rst: parallel_design.pod
-	pod2rst --outfile "$(srcdir)"/parallel_design.rst --infile="$(srcdir)"/parallel_design.pod \
+	./pod2rst-fix < "$(srcdir)"/parallel_design.pod > "$(srcdir)"/parallel_design.rst \
 	|| echo "Warning: pod2rst not found. Using old parallel_design.rst"
 
 parallel_alternatives.rst: parallel_alternatives.pod
-	pod2rst --outfile "$(srcdir)"/parallel_alternatives.rst --infile="$(srcdir)"/parallel_alternatives.pod \
+	./pod2rst-fix < "$(srcdir)"/parallel_alternatives.pod > "$(srcdir)"/parallel_alternatives.rst \
 	|| echo "Warning: pod2rst not found. Using old parallel_alternatives.rst"
 
 sem.rst: sem.pod
-	pod2rst --outfile "$(srcdir)"/sem.rst --infile="$(srcdir)"/sem.pod \
+	./pod2rst-fix < "$(srcdir)"/sem.pod > "$(srcdir)"/sem.rst \
 	|| echo "Warning: pod2rst not found. Using old sem.rst"
 
 sql.rst: sql
-	pod2rst --outfile "$(srcdir)"/sql.rst --infile="$(srcdir)"/sql \
+	./pod2rst-fix < "$(srcdir)"/sql > "$(srcdir)"/sql.rst \
 	|| echo "Warning: pod2rst not found. Using old sql.rst"
 
 niceload.rst: niceload.pod
-	pod2rst --outfile "$(srcdir)"/niceload.rst --infile="$(srcdir)"/niceload.pod \
+	./pod2rst-fix < "$(srcdir)"/niceload.pod > "$(srcdir)"/niceload.rst \
 	|| echo "Warning: pod2rst not found. Using old niceload.rst"
 
 parcat.rst: parcat.pod
-	pod2rst --outfile "$(srcdir)"/parcat.rst --infile="$(srcdir)"/parcat.pod \
+	./pod2rst-fix < "$(srcdir)"/parcat.pod > "$(srcdir)"/parcat.rst \
 	|| echo "Warning: pod2rst not found. Using old parcat.rst"
 
 parset.rst: parset.pod
-	pod2rst --outfile "$(srcdir)"/parset.rst --infile="$(srcdir)"/parset.pod \
+	./pod2rst-fix < "$(srcdir)"/parset.pod > "$(srcdir)"/parset.rst \
 	|| echo "Warning: pod2rst not found. Using old parset.rst"
 
 parsort.rst: parsort
-	pod2rst --outfile "$(srcdir)"/parsort.rst --infile="$(srcdir)"/parsort \
+	./pod2rst-fix < "$(srcdir)"/parsort > "$(srcdir)"/parsort.rst \
 	|| echo "Warning: pod2rst not found. Using old parsort.rst"
 
 parallel.pdf: parallel.pod
@@ -300,6 +347,10 @@ parallel.pdf: parallel.pod
 env_parallel.pdf: env_parallel.pod
 	pod2pdf --output-file "$(srcdir)"/env_parallel.pdf "$(srcdir)"/env_parallel.pod --title "GNU Parallel with environment" \
 	|| echo "Warning: pod2pdf not found. Using old env_parallel.pdf"
+
+parallel_examples.pdf: parallel_examples.pod
+	pod2pdf --output-file "$(srcdir)"/parallel_examples.pdf "$(srcdir)"/parallel_examples.pod --title "GNU Parallel Examples" \
+	|| echo "Warning: pod2pdf not found. Using old parallel_examples.pdf"
 
 parallel_tutorial.pdf: parallel_tutorial.pod
 	pod2pdf --output-file "$(srcdir)"/parallel_tutorial.pdf "$(srcdir)"/parallel_tutorial.pod --title "GNU Parallel Tutorial" \
@@ -345,34 +396,10 @@ parallel_cheat_bw.pdf: parallel_cheat_bw.fodt
 	libreoffice --headless --convert-to pdf parallel_cheat_bw.fodt \
 	|| echo "Warning: libreoffice failed. Using old parallel_cheat_bw.pdf"
 
+parallel_options_map.pdf: parallel.pod pod2graph
+	./pod2graph parallel.pod > parallel_options_map.pdf \
+	|| echo "Warning: pod2graph failed. Using old parallel_options_map.pdf"
+
 sem: parallel
 	ln -fs parallel sem
 
-DISTCLEANFILES = parallel.1 env_parallel.1 sem.1 sql.1 niceload.1	\
-	parallel_tutorial.7 parallel_book.7 parallel_design.7		\
-	parallel_alternatives.7 parcat.1 parset.1 parsort.1		\
-	parallel.html env_parallel.html sem.html sql.html		\
-	niceload.html parallel_tutorial.html parallel_book.html		\
-	parallel_design.html parallel_alternatives.html parcat.html	\
-	parset.html parsort.html parallel.texi env_parallel.texi	\
-	sem.texi sql.texi niceload.texi parallel_tutorial.texi		\
-	parallel_book.texi parallel_design.texi				\
-	parallel_alternatives.texi parcat.texi parset.texi		\
-	parsort.texi \
-	parallel.rst env_parallel.rst sem.rst sql.rst niceload.rst	\
-	parallel_tutorial.rst parallel_book.rst parallel_design.rst	\
-	parallel_alternatives.rst parcat.rst parset.rst parsort.rst	\
-	parallel.pdf env_parallel.pdf sem.pdf sql.pdf niceload.pdf	\
-	parallel_tutorial.pdf parallel_book.pdf parallel_design.pdf	\
-	parallel_alternatives.pdf parcat.pdf parset.pdf parsort.pdf	\
-	parallel_cheat_bw.pdf
-
-EXTRA_DIST = parallel sem sql niceload parcat parset parsort		\
-	env_parallel env_parallel.ash env_parallel.bash			\
-	env_parallel.csh env_parallel.dash env_parallel.fish		\
-	env_parallel.ksh env_parallel.mksh env_parallel.pdksh		\
-	env_parallel.sh env_parallel.tcsh env_parallel.zsh parcat.pod	\
-	parset.pod sem.pod parallel.pod env_parallel.pod niceload.pod	\
-	parallel_tutorial.pod parallel_book.pod parallel_design.pod	\
-	parallel_alternatives.pod parallel_cheat_bw.fodt		\
-	$(DISTCLEANFILES)

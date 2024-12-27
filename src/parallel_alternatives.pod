@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# SPDX-FileCopyrightText: 2021 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
+# SPDX-FileCopyrightText: 2021-2024 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
 # SPDX-License-Identifier: GFDL-1.3-or-later
 # SPDX-License-Identifier: CC-BY-SA-4.0
 
@@ -13,11 +13,13 @@ parallel_alternatives - Alternatives to GNU B<parallel>
 
 =head1 DIFFERENCES BETWEEN GNU Parallel AND ALTERNATIVES
 
-There are a lot programs with some of the functionality of GNU
-B<parallel>. GNU B<parallel> strives to include the best of the
-functionality without sacrificing ease of use.
+There are a lot programs that share functionality with GNU
+B<parallel>. Some of these are specialized tools, and while GNU
+B<parallel> can emulate many of them, a specialized tool can be better
+at a given task. GNU B<parallel> strives to include the best of the
+general functionality without sacrificing ease of use.
 
-B<parallel> has existed since 2002 and as GNU B<parallel> since
+B<parallel> has existed since 2002-01-06 and as GNU B<parallel> since
 2010. A lot of the alternatives have not had the vitality to survive
 that long, but have come and gone during that time.
 
@@ -89,7 +91,7 @@ The following features are in some of the comparable tools:
 
 =item O7. Buffering on disk
 
-=item O8. Cleanup of temporary files if killed
+=item O8. No temporary files left if killed
 
 =item O9. Test if disk runs full during run
 
@@ -102,7 +104,7 @@ The following features are in some of the comparable tools:
 
 =over
 
-=item E1. Running jobs in parallel
+=item E1. Run jobs in parallel
 
 =item E2. List running jobs
 
@@ -233,7 +235,7 @@ using B<-z> or B<-Z>), B<sort> (requires using B<-z>).
 
 GNU B<parallel>'s newline separation can be emulated with:
 
-B<cat | xargs -d "\n" -n1 I<command>>
+  cat | xargs -d "\n" -n1 command
 
 B<xargs> can run a given number of jobs in parallel, but has no
 support for running number-of-cpu-cores jobs in parallel.
@@ -244,7 +246,7 @@ the last half of the line is from another process. The example
 B<Parallel grep> cannot be done reliably with B<xargs> because of
 this. To see this in action try:
 
-  parallel perl -e '\$a=\"1\".\"{}\"x10000000\;print\ \$a,\"\\n\"' \
+  parallel perl -e "'"'$a="1"."{}"x10000000;print $a,"\n"'"'" \
     '>' {} ::: a b c d e f g h
   # Serial = no mixing = the wanted result
   # 'tr -s a-z' squeezes repeating letters into a single letter
@@ -293,6 +295,9 @@ contain space, " or ').
   ls | xargs -d "\n" -P8 -I {} bash -c "wc {} >{}.wc"
   ls | xargs -d "\n" -P8 -I {} bash -c "echo {}; ls {}|wc"
 
+A more extreme example can be found on:
+https://unix.stackexchange.com/q/405552/
+
 https://www.gnu.org/software/findutils/
 
 
@@ -322,7 +327,8 @@ B<find -exec> only works on files. Processing other input (such as
 hosts or URLs) will require creating these inputs as files. B<find
 -exec> has no support for running commands in parallel.
 
-https://www.gnu.org/software/findutils/ (Last checked: 2019-01)
+https://www.gnu.org/software/findutils/
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN make -j AND GNU Parallel
@@ -355,7 +361,8 @@ by GNU B<parallel> does not depend on each other.
 (Very early versions of GNU B<parallel> were coincidentally implemented
 using B<make -j>).
 
-https://www.gnu.org/software/make/ (Last checked: 2019-01)
+https://www.gnu.org/software/make/
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN ppss AND GNU Parallel
@@ -412,7 +419,8 @@ using GNU B<parallel>:
 
   1$ find /path/to/files -type f | parallel gzip
 
-  2$ ./ppss.sh standalone -d /path/to/files -c 'cp "$ITEM" /destination/dir '
+  2$ ./ppss.sh standalone -d /path/to/files \
+       -c 'cp "$ITEM" /destination/dir '
 
   2$ find /path/to/files -type f | parallel cp {} /destination/dir
 
@@ -430,9 +438,11 @@ using GNU B<parallel>:
      ./ppss deploy -C config.cfg
      ./ppss start -C config
 
-  5$ # parallel does not use configs. If you want a different username put it in nodes.txt: user@hostname
+  5$ # parallel does not use configs. If you want
+     # a different username put it in nodes.txt: user@hostname
      find source/dir -type f |
-       parallel --sshloginfile nodes.txt --trc {.}.mp3 lame -a {} -o {.}.mp3 --preset standard --quiet
+       parallel --sshloginfile nodes.txt --trc {.}.mp3 \
+         lame -a {} -o {.}.mp3 --preset standard --quiet
 
   6$ ./ppss stop -C config.cfg
 
@@ -451,6 +461,7 @@ using GNU B<parallel>:
   9$ killall -SIGUSR2 parallel
 
 https://github.com/louwrentius/PPSS
+(Last checked: 2010-12)
 
 
 =head2 DIFFERENCES BETWEEN pexec AND GNU Parallel
@@ -530,6 +541,7 @@ using GNU B<parallel>:
        'pnmscale 0.5 | pnmtojpeg | sem --id diskio cat > th_{}'
 
 https://www.gnu.org/software/pexec/
+(Last checked: 2010-12)
 
 
 =head2 DIFFERENCES BETWEEN xjobs AND GNU Parallel
@@ -575,7 +587,8 @@ using GNU B<parallel>:
      echo unzip 1.zip >> /var/run/my_named_pipe;
      echo tar cf /backup/myhome.tar /home/me >> /var/run/my_named_pipe
 
-https://www.maier-komor.de/xjobs.html (Last checked: 2019-01)
+https://www.maier-komor.de/xjobs.html
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN prll AND GNU Parallel
@@ -600,7 +613,8 @@ using GNU B<parallel>:
 
   1$ parallel mogrify -flip ::: *.jpg
 
-https://github.com/exzombie/prll (Last checked: 2019-01)
+https://github.com/exzombie/prll
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN dxargs AND GNU Parallel
@@ -612,7 +626,8 @@ MaxStartups. B<dxargs> is only built for remote run jobs, but does not
 support transferring of files.
 
 https://web.archive.org/web/20120518070250/http://www.
-semicomplete.com/blog/geekery/distributed-xargs.html (Last checked: 2019-01)
+semicomplete.com/blog/geekery/distributed-xargs.html
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN mdm/middleman AND GNU Parallel
@@ -629,7 +644,8 @@ berlios.de/usage.html ported to GNU B<parallel>:
      cat files | parallel cmd
      find dir -execdir sem cmd {} \;
 
-https://github.com/cklin/mdm (Last checked: 2019-01)
+https://github.com/cklin/mdm
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN xapply AND GNU Parallel
@@ -692,7 +708,8 @@ using GNU B<parallel>:
 
   11$ parallel '[ -f {} ] && echo {}' < List | ...
 
-https://www.databits.net/~ksb/msrc/local/bin/xapply/xapply.html
+https://www.databits.net/~ksb/msrc/local/bin/xapply/xapply.html (Last
+checked: 2010-12)
 
 
 =head2 DIFFERENCES BETWEEN AIX apply AND GNU Parallel
@@ -730,7 +747,8 @@ the file named a2 to the file named b2, enter:
   4$ parallel ln {} /usr/joe ::: *
 
 https://www-01.ibm.com/support/knowledgecenter/
-ssw_aix_71/com.ibm.aix.cmds1/apply.htm (Last checked: 2019-01)
+ssw_aix_71/com.ibm.aix.cmds1/apply.htm
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN paexec AND GNU Parallel
@@ -783,6 +801,7 @@ using GNU B<parallel>:
      parallel echo {} '| awk {print\ toupper\(\$0\)}' <<EOF [...]
 
 https://github.com/cheusov/paexec
+(Last checked: 2010-12)
 
 
 =head2 DIFFERENCES BETWEEN map(sitaramc) AND GNU Parallel
@@ -795,7 +814,7 @@ Summary (see legend above):
 
 =item M1 (M2) M3 (M4) M5 M6
 
-=item - O2 O3 - O5 - - N/A N/A O10
+=item - O2 O3 - O5 - - x x O10
 
 =item E1 - - - - - -
 
@@ -912,7 +931,8 @@ GNU B<parallel>:
 
   8$ export PARALLEL=-j50%
 
-https://github.com/sitaramc/map (Last checked: 2020-05)
+https://github.com/sitaramc/map
+(Last checked: 2020-05)
 
 
 =head2 DIFFERENCES BETWEEN ladon AND GNU Parallel
@@ -968,26 +988,47 @@ and that it is run under a shell that supports '**' globbing (such as B<zsh>):
 
   4$ parallel lame -V 2 FULLPATH DIRNAME/BASENAME.mp3 ::: ~/Music/*.wav
 
-https://github.com/danielgtaylor/ladon (Last checked: 2019-01)
+https://github.com/danielgtaylor/ladon
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN jobflow AND GNU Parallel
 
+Summary (see legend above):
+
+=over
+
+=item I1 - - - - - I7
+
+=item - - M3 - - (M6)
+
+=item O1 O2 O3 - O5 O6 (O7) - - O10
+
+=item E1 - - - - E6 -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+
 B<jobflow> can run multiple jobs in parallel.
 
 Just like B<xargs> output from B<jobflow> jobs running in parallel mix
-together by default. B<jobflow> can buffer into files (placed in
-/run/shm), but these are not cleaned up if B<jobflow> dies
-unexpectedly (e.g. by Ctrl-C). If the total output is big (in the
-order of RAM+swap) it can cause the system to slow to a crawl and
-eventually run out of memory.
+together by default. B<jobflow> can buffer into files with
+B<-buffered> (placed in /run/shm), but these are not cleaned up if
+B<jobflow> dies unexpectedly (e.g. by Ctrl-C). If the total output is
+big (in the order of RAM+swap) it can cause the system to slow to a
+crawl and eventually run out of memory.
 
-B<jobflow> gives no error if the command is unknown, and like B<xargs>
-redirection and composed commands require wrapping with B<bash -c>.
+Just like B<xargs> redirection and composed commands require wrapping
+with B<bash -c>.
 
-Input lines can at most be 4096 bytes. You can at most have 16 {}'s in
-the command template. More than that either crashes the program or
-simple does not execute the command.
+Input lines can at most be 4096 bytes.
+
+B<jobflow> is faster than GNU B<parallel> but around 6 times slower
+than B<parallel-bash>.
 
 B<jobflow> has no equivalent for B<--pipe>, or B<--sshlogin>.
 
@@ -1019,7 +1060,14 @@ jobs. This can be emulated by GNU B<parallel> using B<bash>'s B<ulimit>:
   4$ find . -name '*.bmp' | \
        parallel -j8 bmp2jpeg {.}.bmp {.}.jpg
 
+  5$ seq 100 | jobflow -skip 10 -count 10
+
+  5$ seq 100 | parallel --filter '{1} > 10 and {1} <= 20' echo
+
+  5$ seq 100 | parallel echo '{= $_>10 and $_<=20 or skip() =}'
+
 https://github.com/rofl0r/jobflow
+(Last checked: 2022-05)
 
 
 =head2 DIFFERENCES BETWEEN gargs AND GNU Parallel
@@ -1050,6 +1098,7 @@ Output to stderr (standard error) is changed if the command fails.
        -P 2 "echo '{1}:{2}-{3}' full-line: \'{}\'"
 
 https://github.com/brentp/gargs
+(Last checked: 2016-08)
 
 
 =head2 DIFFERENCES BETWEEN orgalorg AND GNU Parallel
@@ -1091,9 +1140,10 @@ B<orgalorg> has a progress indicator for the transferring of a
 file. GNU B<parallel> does not.
 
 https://github.com/reconquest/orgalorg
+(Last checked: 2016-08)
 
 
-=head2 DIFFERENCES BETWEEN Rust parallel AND GNU Parallel
+=head2 DIFFERENCES BETWEEN Rust parallel(mmstick) AND GNU Parallel
 
 Rust parallel focuses on speed. It is almost as fast as B<xargs>, but
 not as fast as B<parallel-bash>. It implements a few features from GNU
@@ -1148,6 +1198,7 @@ If /tmp/parallel runs full during the run, Rust parallel does not
 report this, but finishes with success - thereby risking data loss.
 
 https://github.com/mmstick/parallel
+(Last checked: 2016-08)
 
 
 =head2 DIFFERENCES BETWEEN Rush AND GNU Parallel
@@ -1566,6 +1617,7 @@ The failed commands can be resumed with:
 =back
 
 https://github.com/shenwei356/rush
+(Last checked: 2017-05)
 
 
 =head2 DIFFERENCES BETWEEN ClusterSSH AND GNU Parallel
@@ -1588,6 +1640,7 @@ GNU B<parallel> can be used as a poor-man's version of ClusterSSH:
 B<parallel --nonall -S server-a,server-b do_stuff foo bar>
 
 https://github.com/duncs/clusterssh
+(Last checked: 2010-12)
 
 
 =head2 DIFFERENCES BETWEEN coshell AND GNU Parallel
@@ -1602,7 +1655,8 @@ Output can be buffered by using B<-d>. Output is buffered in memory,
 so big output can cause swapping and therefore be terrible slow or
 even cause out of memory.
 
-https://github.com/gdm85/coshell (Last checked: 2019-01)
+https://github.com/gdm85/coshell
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN spread AND GNU Parallel
@@ -1639,7 +1693,7 @@ and fails on B<pyargs traceroute gnu.org fsf.org>.
 
   seq 5 | pyargs -P50 --mark -L seq
   seq 5 | parallel -P50 --lb \
-    --tagstring OUTPUT'[{= $_=$job->replaced()=}]' seq
+    --tagstring OUTPUT'[{= $_=$job->replaced() =}]' seq
   # Similar, but not precisely the same
   seq 5 | parallel -P50 --lb --tag seq
 
@@ -1663,7 +1717,8 @@ and fails on B<pyargs traceroute gnu.org fsf.org>.
   # Similar, but not exactly the same
   parallel seq ::: 1 2 3 4 5 6
 
-https://github.com/robertblackwell/pyargs (Last checked: 2019-01)
+https://github.com/robertblackwell/pyargs
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN concurrently AND GNU Parallel
@@ -1686,7 +1741,8 @@ There is also no way of controlling how many jobs should be run in
 parallel at a time - i.e. "number of jobslots". Instead all jobs are
 simply started in parallel.
 
-https://github.com/kimmobrunfeldt/concurrently (Last checked: 2019-01)
+https://github.com/kimmobrunfeldt/concurrently
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN map(soveran) AND GNU Parallel
@@ -1742,7 +1798,8 @@ Here are the 5 examples converted to GNU Parallel:
   5$ printf "1\n1\n1\n" | parallel -j0 'sleep {} && say done'
   5$ parallel -j0 'sleep {} && say done' ::: 1 1 1
 
-https://github.com/soveran/map (Last checked: 2019-01)
+https://github.com/soveran/map
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN loop AND GNU Parallel
@@ -1926,7 +1983,8 @@ emulated with GNU B<parallel>:
     $ loop './do_thing.sh' --every 15s --until-success --num 5
     $ parallel --retries 5 --delay 15s ::: ./do_thing.sh
 
-https://github.com/Miserlou/Loop/ (Last checked: 2018-10)
+https://github.com/Miserlou/Loop/
+(Last checked: 2018-10)
 
 
 =head2 DIFFERENCES BETWEEN lorikeet AND GNU Parallel
@@ -1934,7 +1992,8 @@ https://github.com/Miserlou/Loop/ (Last checked: 2018-10)
 B<lorikeet> can run jobs in parallel. It does this based on a
 dependency graph described in a file, so this is similar to B<make>.
 
-https://github.com/cetra3/lorikeet (Last checked: 2018-10)
+https://github.com/cetra3/lorikeet
+(Last checked: 2018-10)
 
 
 =head2 DIFFERENCES BETWEEN spp AND GNU Parallel
@@ -1943,7 +2002,8 @@ B<spp> can run jobs in parallel. B<spp> does not use a command
 template to generate the jobs, but requires jobs to be in a
 file. Output from the jobs mix.
 
-https://github.com/john01dav/spp (Last checked: 2019-01)
+https://github.com/john01dav/spp
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN paral AND GNU Parallel
@@ -2012,7 +2072,8 @@ the GNU B<parallel> command):
        echo e && sleep 0.5 && echo f && sleep 0.5 && \
        echo g && sleep 0.5 && echo h"
 
-https://github.com/amattn/paral (Last checked: 2019-01)
+https://github.com/amattn/paral
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN concurr AND GNU Parallel
@@ -2039,7 +2100,8 @@ The examples from B<README.md>:
 B<concurr> deals badly empty input files and with output larger than
 64 KB.
 
-https://github.com/mmstick/concurr (Last checked: 2019-01)
+https://github.com/mmstick/concurr
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN lesser-parallel AND GNU Parallel
@@ -2052,7 +2114,8 @@ B<lesser-parallel> implements a few of the replacement strings, but
 hardly any options, whereas B<parallel --embed> gives you the full
 GNU B<parallel> experience.
 
-https://github.com/kou1okada/lesser-parallel (Last checked: 2019-01)
+https://github.com/kou1okada/lesser-parallel
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN npm-parallel AND GNU Parallel
@@ -2062,7 +2125,8 @@ B<npm-parallel> can run npm tasks in parallel.
 There are no examples and very little documentation, so it is hard to
 compare to GNU B<parallel>.
 
-https://github.com/spion/npm-parallel (Last checked: 2019-01)
+https://github.com/spion/npm-parallel
+(Last checked: 2019-01)
 
 
 =head2 DIFFERENCES BETWEEN machma AND GNU Parallel
@@ -2108,7 +2172,8 @@ The examples from README.md:
        parallel --null --bar mogrify -resize 1200x1200 \
          -filter Lanczos {}
 
-https://github.com/fd0/machma (Last checked: 2019-06)
+https://github.com/fd0/machma
+(Last checked: 2019-06)
 
 
 =head2 DIFFERENCES BETWEEN interlace AND GNU Parallel
@@ -2266,14 +2331,16 @@ Run Nikto Using Multiple Proxies
      "nikto --host {1}:{2} -useproxy {3} > ./{1}-{2}-nikto.txt" \
      :::: ./targets.txt ::: 80 443 :::: ./proxies.txt
 
-https://github.com/codingo/Interlace (Last checked: 2019-09)
+https://github.com/codingo/Interlace
+(Last checked: 2019-09)
 
 
 =head2 DIFFERENCES BETWEEN otonvm Parallel AND GNU Parallel
 
 I have been unable to get the code to run at all. It seems unfinished.
 
-https://github.com/otonvm/Parallel (Last checked: 2019-02)
+https://github.com/otonvm/Parallel
+(Last checked: 2019-02)
 
 
 =head2 DIFFERENCES BETWEEN k-bx par AND GNU Parallel
@@ -2305,7 +2372,8 @@ corresponding GNU B<parallel> command.
   par --succeed "foo" "bar" && echo 'wow'
   parallel "foo" "bar"; true && echo 'wow'
 
-https://github.com/k-bx/par (Last checked: 2019-02)
+https://github.com/k-bx/par
+(Last checked: 2019-02)
 
 =head2 DIFFERENCES BETWEEN parallelshell AND GNU Parallel
 
@@ -2323,9 +2391,11 @@ line and all commands are started in parallel at the same time. This
 will cause the system to freeze if there are so many jobs that there
 is not enough memory to run them all at the same time.
 
-https://github.com/keithamus/parallelshell (Last checked: 2019-02)
+https://github.com/keithamus/parallelshell
+(Last checked: 2019-02)
 
-https://github.com/darkguy2008/parallelshell (Last checked: 2019-03)
+https://github.com/darkguy2008/parallelshell
+(Last checked: 2019-03)
 
 
 =head2 DIFFERENCES BETWEEN shell-executor AND GNU Parallel
@@ -2344,7 +2414,8 @@ line and all commands are started in parallel at the same time. This
 will cause the system to freeze if there are so many jobs that there
 is not enough memory to run them all at the same time.
 
-https://github.com/royriojas/shell-executor (Last checked: 2019-02)
+https://github.com/royriojas/shell-executor
+(Last checked: 2019-02)
 
 
 =head2 DIFFERENCES BETWEEN non-GNU par AND GNU Parallel
@@ -2364,7 +2435,8 @@ B<parallel> and 60% slower than B<xargs>.
 
 https://github.com/UnixJunkie/PAR
 
-https://savannah.nongnu.org/projects/par (Last checked: 2019-02)
+https://savannah.nongnu.org/projects/par
+(Last checked: 2019-02)
 
 
 =head2 DIFFERENCES BETWEEN fd AND GNU Parallel
@@ -2376,7 +2448,8 @@ It buffers output in RAM.
 
 It only takes file names from the filesystem as input (similar to B<find>).
 
-https://github.com/sharkdp/fd (Last checked: 2019-02)
+https://github.com/sharkdp/fd
+(Last checked: 2019-02)
 
 
 =head2 DIFFERENCES BETWEEN lateral AND GNU Parallel
@@ -2462,7 +2535,8 @@ corresponding GNU B<sem> and GNU B<parallel> commands:
      echo 10 >/tmp/njobs
      wait
 
-https://github.com/akramer/lateral (Last checked: 2019-03)
+https://github.com/akramer/lateral
+(Last checked: 2019-03)
 
 
 =head2 DIFFERENCES BETWEEN with-this AND GNU Parallel
@@ -2495,7 +2569,8 @@ commands do not work.
 B<with-this> gives some additional information, so the output has to
 be cleaned before piping it to the next command.
 
-https://github.com/amritb/with-this.git (Last checked: 2019-03)
+https://github.com/amritb/with-this.git
+(Last checked: 2019-03)
 
 
 =head2 DIFFERENCES BETWEEN Tollef's parallel (moreutils) AND GNU Parallel
@@ -2587,20 +2662,29 @@ You can then do:
 
 =head3 EXAMPLES FROM rargs MANUAL
 
-  ls *.bak | rargs -p '(.*)\.bak' mv {0} {1}
-  ls *.bak | parallel mv {} {.}
+  1$ ls *.bak | rargs -p '(.*)\.bak' mv {0} {1}
 
-  cat download-list.csv | rargs -p '(?P<url>.*),(?P<filename>.*)' wget {url} -O {filename}
-  cat download-list.csv | parallel --csv wget {1} -O {2}
+  1$ ls *.bak | parallel mv {} {.}
+
+  2$ cat download-list.csv |
+       rargs -p '(?P<url>.*),(?P<filename>.*)' wget {url} -O {filename}
+
+  2$ cat download-list.csv |
+       parallel --csv wget {1} -O {2}
   # or use regexps:
-  cat download-list.csv |
-    parallel --rpl '{url} s/,.*//' --rpl '{filename} s/.*?,//' wget {url} -O {filename}
+  2$ cat download-list.csv |
+       parallel --rpl '{url} s/,.*//' --rpl '{filename} s/.*?,//' \
+         wget {url} -O {filename}
 
-  cat /etc/passwd | rargs -d: echo -e 'id: "{1}"\t name: "{5}"\t rest: "{6..::}"'
-  cat /etc/passwd |
-    parallel -q --colsep : echo -e 'id: "{1}"\t name: "{5}"\t rest: "{=6 $_=join":",@arg[6..$#arg]=}"'
+  3$ cat /etc/passwd |
+       rargs -d: echo -e 'id: "{1}"\t name: "{5}"\t rest: "{6..::}"'
 
-https://github.com/lotabout/rargs (Last checked: 2020-01)
+  3$ cat /etc/passwd |
+       parallel -q --colsep : \
+         echo -e 'id: "{1}"\t name: "{5}"\t rest: "{=6 $_=join":",@arg[6..$#arg]=}"'
+
+https://github.com/lotabout/rargs
+(Last checked: 2020-01)
 
 
 =head2 DIFFERENCES BETWEEN threader AND GNU Parallel
@@ -2613,7 +2697,7 @@ Summary (see legend above):
 
 =item M1 - M3 - - M6
 
-=item O1 - O3 - O5 - - N/A N/A
+=item O1 - O3 - O5 - - x x
 
 =item E1 - - E4 - - -
 
@@ -2632,7 +2716,8 @@ B<threader> ignores stderr, so any output to stderr is
 lost. B<threader> buffers in RAM, so output bigger than the machine's
 virtual memory will cause the machine to crash.
 
-https://github.com/voodooEntity/threader (Last checked: 2020-04)
+https://github.com/voodooEntity/threader
+(Last checked: 2020-04)
 
 
 =head2 DIFFERENCES BETWEEN runp AND GNU Parallel
@@ -2645,7 +2730,7 @@ Summary (see legend above):
 
 =item M1 - (M3) - - M6
 
-=item O1 O2 O3 - O5 O6 - N/A N/A -
+=item O1 O2 O3 - O5 O6 - x x -
 
 =item E1 - - - - - -
 
@@ -2770,7 +2855,8 @@ output to stderr (this can be prevented with -q)
        parallel netcat -v -w2 -z {=uq=} 2>&1 |
        egrep '(succeeded!|open)$'
 
-https://github.com/jreisinger/runp (Last checked: 2020-04)
+https://github.com/jreisinger/runp
+(Last checked: 2020-04)
 
 
 =head2 DIFFERENCES BETWEEN papply AND GNU Parallel
@@ -2783,7 +2869,7 @@ Summary (see legend above):
 
 =item M1 - M3 - - M6
 
-=item - - O3 - O5 - - N/A N/A O10
+=item - - O3 - O5 - - x x O10
 
 =item E1 - - E4 - - -
 
@@ -2826,7 +2912,8 @@ seconds (compared to 10 seconds with GNU B<parallel>).
   2$ parallel convert {} {.}.jpg ::: *.png
 
 
-https://pypi.org/project/papply/ (Last checked: 2020-04)
+https://pypi.org/project/papply/
+(Last checked: 2020-04)
 
 
 =head2 DIFFERENCES BETWEEN async AND GNU Parallel
@@ -2839,7 +2926,7 @@ Summary (see legend above):
 
 =item - - - - - M6
 
-=item - O2 O3 - O5 O6 - N/A N/A O10
+=item - O2 O3 - O5 O6 - x x O10
 
 =item E1 - - E4 - E6 -
 
@@ -2913,7 +3000,8 @@ composed commands.
   8$ # GNU Parallel does not need to stop a server
 
 
-https://github.com/ctbur/async/ (Last checked: 2020-11)
+https://github.com/ctbur/async/
+(Last checked: 2023-01)
 
 
 =head2 DIFFERENCES BETWEEN pardi AND GNU Parallel
@@ -2958,14 +3046,16 @@ parallel>).
   2$ pardi -n 1 -i data/test_in.types -o data/test_out.types \
              -d 'r:^#atoms:' -w 'cat %IN > %OUT'
   
-  2$ cat data/test_in.types | parallel -n 1 -k --pipe --cat \
-             --regexp --recstart '^#atoms' 'cat {}' > data/test_out.types
+  2$ cat data/test_in.types |
+       parallel -n 1 -k --pipe --cat --regexp --recstart '^#atoms' \
+         'cat {}' > data/test_out.types
   
   3$ pardi -c 6 -i data/test_in.types -o data/test_out.types \
              -d 'r:^#atoms:' -w 'cat %IN > %OUT'
   
-  3$ cat data/test_in.types | parallel -n 6 -k --pipe --cat \
-             --regexp --recstart '^#atoms' 'cat {}' > data/test_out.types
+  3$ cat data/test_in.types |
+       parallel -n 6 -k --pipe --cat --regexp --recstart '^#atoms' \
+         'cat {}' > data/test_out.types
   
   4$ pardi -i data/decoys.mol2 -o data/still_decoys.mol2 \
              -d 's:@<TRIPOS>MOLECULE' -w 'cp %IN %OUT'
@@ -2981,7 +3071,8 @@ parallel>).
        parallel -k --pipe --block 10k --recend '' --cat \
          'cat {} > {#}; cat {#}; rm {#}' > data/decoys2.mol2
 
-https://github.com/UnixJunkie/pardi (Last checked: 2021-01)
+https://github.com/UnixJunkie/pardi
+(Last checked: 2021-01)
 
 
 =head2 DIFFERENCES BETWEEN bthread AND GNU Parallel
@@ -3010,7 +3101,8 @@ line length is 1073741759.
 You cannot quote space in the command, so you cannot run composed
 commands like B<sh -c "echo a; echo b">.
 
-https://gitlab.com/netikras/bthread (Last checked: 2021-01)
+https://gitlab.com/netikras/bthread
+(Last checked: 2021-01)
 
 
 =head2 DIFFERENCES BETWEEN simple_gpu_scheduler AND GNU Parallel
@@ -3038,9 +3130,11 @@ Summary (see legend above):
   1$ simple_gpu_scheduler --gpus 0 1 2 < gpu_commands.txt
 
   1$ parallel -j3 --shuf \
-     CUDA_VISIBLE_DEVICES='{=1 $_=slot()-1 =} {=uq;=}' < gpu_commands.txt
+     CUDA_VISIBLE_DEVICES='{=1 $_=slot()-1 =} {=uq;=}' \
+       < gpu_commands.txt
 
-  2$ simple_hypersearch "python3 train_dnn.py --lr {lr} --batch_size {bs}" \
+  2$ simple_hypersearch \
+       "python3 train_dnn.py --lr {lr} --batch_size {bs}" \
        -p lr 0.001 0.0005 0.0001 -p bs 32 64 128 |
        simple_gpu_scheduler --gpus 0,1,2
 
@@ -3055,7 +3149,7 @@ Summary (see legend above):
        simple_gpu_scheduler --gpus 0,1,2
 
   3$ parallel --header : --shuf \
-       CUDA_VISIBLE_DEVICES='{=1 $_=slot()-1; seq() > 5 and skip() =}' \
+       CUDA_VISIBLE_DEVICES='{=1 $_=slot()-1; seq()>5 and skip() =}' \
        python3 train_dnn.py --lr {lr} --batch_size {bs} \
        ::: lr 0.001 0.0005 0.0001 ::: bs 32 64 128
 
@@ -3073,8 +3167,8 @@ Summary (see legend above):
      # Needed to flush output from completed jobs
      seq 3 | parallel echo true >> gpu.queue
 
-https://github.com/ExpectationMax/simple_gpu_scheduler (Last checked:
-2021-01)
+https://github.com/ExpectationMax/simple_gpu_scheduler
+(Last checked: 2021-01)
 
 
 =head2 DIFFERENCES BETWEEN parasweep AND GNU Parallel
@@ -3133,7 +3227,8 @@ Filtering is supported as:
 
   parallel --filter '{1} > {2}' echo ::: 1 2 3 ::: 1 2 3
 
-https://github.com/eviatarbach/parasweep (Last checked: 2021-01)
+https://github.com/eviatarbach/parasweep
+(Last checked: 2021-01)
 
 
 =head2 DIFFERENCES BETWEEN parallel-bash AND GNU Parallel
@@ -3157,7 +3252,7 @@ Summary (see legend above):
 =back
 
 B<parallel-bash> is written in pure bash. It is really fast (overhead
-of ~0.05 ms/job compared to GNU B<parallel>'s ~3 ms/job). So if your
+of ~0.05 ms/job compared to GNU B<parallel>'s 3-10 ms/job). So if your
 jobs are extremely short lived, and you can live with the quite
 limited command, this may be useful.
 
@@ -3347,7 +3442,928 @@ https://github.com/mylanconnolly/parallel
 (Last checked: 2021-07)
 
 
+=head2 DIFFERENCES BETWEEN p AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item - - - I4 - - x
+
+=item - - - - - M6
+
+=item - O2 O3 - O5 O6 - x x - O10
+
+=item E1 - - - - - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+B<p> is a tiny shell script. It can color output with some predefined
+colors, but is otherwise quite limited.
+
+It maxes out at around 116000 jobs (probably due to limitations in Bash).
+
+=head3 EXAMPLES FROM p
+
+Some of the examples from B<p> cannot be implemented 100% by GNU
+B<parallel>: The coloring is a bit different, and GNU B<parallel>
+cannot have B<--tag> for some inputs and not for others.
+
+The coloring done by GNU B<parallel> is not exactly the same as B<p>.
+
+  1$ p -bc blue "ping 127.0.0.1" -uc red "ping 192.168.0.1" \
+     -rc yellow "ping 192.168.1.1" -t example "ping example.com"
+
+  1$ parallel --lb -j0 --color --tag ping \
+     ::: 127.0.0.1 192.168.0.1 192.168.1.1 example.com
+
+  2$ p "tail -f /var/log/httpd/access_log" \
+     -bc red "tail -f /var/log/httpd/error_log"
+
+  2$ cd /var/log/httpd;
+     parallel --lb --color --tag tail -f ::: access_log error_log
+
+  3$ p tail -f "some file" \& p tail -f "other file with space.txt"
+
+  3$ parallel --lb tail -f ::: 'some file' "other file with space.txt"
+
+  4$ p -t project1 "hg pull project1" -t project2 \
+     "hg pull project2" -t project3 "hg pull project3"
+
+  4$ parallel --lb hg pull ::: project{1..3}
+
+https://github.com/rudymatela/evenmoreutils/blob/master/man/p.1.adoc
+(Last checked: 2022-04)
+
+
+=head2 DIFFERENCES BETWEEN senechal AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item I1 - - - - - -
+
+=item M1 - M3 - - M6
+
+=item O1 - O3 O4 - - - x x -
+
+=item E1 - - - - - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+B<seneschal> only starts the first job after reading the last job, and
+output from the first job is only printed after the last job finishes.
+
+1 byte of output requites 3.5 bytes of RAM.
+
+This makes it impossible to have a total output bigger than the
+virtual memory.
+
+Even though output is kept in RAM outputing is quite slow: 30 MB/s.
+
+Output larger than 4 GB causes random problems - it looks like a race
+condition.
+
+This:
+
+  echo 1 | seneschal  --prefix='yes `seq 1000`|head -c 1G' >/dev/null
+
+takes 4100(!) CPU seconds to run on a 64C64T server, but only 140 CPU
+seconds on a 4C8T laptop. So it looks like B<seneschal> wastes a lot
+of CPU time coordinating the CPUs.
+
+Compare this to:
+
+  echo 1 | time -v parallel -N0 'yes `seq 1000`|head -c 1G' >/dev/null
+
+which takes 3-8 CPU seconds.
+
+=head3 EXAMPLES FROM seneschal README.md
+
+  1$ echo $REPOS | seneschal --prefix="cd {} && git pull"
+
+  # If $REPOS is newline separated
+  1$ echo "$REPOS" | parallel -k "cd {} && git pull"
+  # If $REPOS is space separated
+  1$ echo -n "$REPOS" | parallel -d' ' -k "cd {} && git pull"
+
+  COMMANDS="pwd
+  sleep 5 && echo boom
+  echo Howdy
+  whoami"
+  
+  2$ echo "$COMMANDS" | seneschal --debug
+  
+  2$ echo "$COMMANDS" | parallel -k -v
+  
+  3$ ls -1 | seneschal --prefix="pushd {}; git pull; popd;"
+  
+  3$ ls -1 | parallel -k "pushd {}; git pull; popd;"
+  # Or if current dir also contains files:
+  3$ parallel -k "pushd {}; git pull; popd;" ::: */
+
+https://github.com/TheWizardTower/seneschal
+(Last checked: 2022-06)
+
+
+=head2 DIFFERENCES BETWEEN async AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item x x x x x x x
+
+=item - x x x x x
+
+=item x O2 O3 O4 O5 O6 - x x O10
+
+=item E1 - - E4 - - -
+
+=item - - - - - - - - -
+
+=item S1 S2
+
+=back
+
+B<async> works like B<sem>.
+
+
+=head3 EXAMPLES FROM async
+
+  1$ S="/tmp/example_socket"
+
+     async -s="$S" server --start
+
+     for i in {1..20}; do
+         # prints command output to stdout
+         async -s="$S" cmd -- bash -c "sleep 1 && echo test $i"
+     done
+     
+     # wait until all commands are finished
+     async -s="$S" wait
+     
+  1$ S="example_id"
+
+     # server not needed
+
+     for i in {1..20}; do
+         # prints command output to stdout
+         sem --bg --id "$S" -j100% "sleep 1 && echo test $i"
+     done
+     
+     # wait until all commands are finished
+     sem --fg --id "$S" --wait
+     
+  2$ # configure the server to run four commands in parallel
+     async -s="$S" server -j4
+     
+     mkdir "/tmp/ex_dir"
+     for i in {21..40}; do
+         # redirects command output to /tmp/ex_dir/file*
+         async -s="$S" cmd -o "/tmp/ex_dir/file$i" -- \
+           bash -c "sleep 1 && echo test $i"
+     done
+     
+     async -s="$S" wait
+     
+     # stops server
+     async -s="$S" server --stop
+
+  2$ # starting server not needed
+
+     mkdir "/tmp/ex_dir"
+     for i in {21..40}; do
+         # redirects command output to /tmp/ex_dir/file*
+         sem --bg --id "$S" --results "/tmp/ex_dir/file$i{}" \
+           "sleep 1 && echo test $i"
+     done
+
+     sem --fg --id "$S" --wait
+
+     # there is no server to stop
+
+https://github.com/ctbur/async
+(Last checked: 2023-01)
+
+
+=head2 DIFFERENCES BETWEEN tandem AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item - - - I4 - - x
+
+=item M1 - - - - M6
+
+=item - - O3 - - - - x - -
+
+=item E1 - E3 - E5 - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+B<tandem> runs full commands in parallel. It is made for starting a
+"server", running a job against the server, and when the job is done,
+the server is killed.
+
+More generally: it kills all jobs when the first job completes -
+similar to '--halt now,done=1'.
+
+B<tandem> silently discards some output. It is unclear exactly when
+this happens. It looks like a race condition, because it varies for
+each run.
+
+  $ tandem "seq 10000" | wc -l
+  6731 <- This should always be 10002
+
+
+=head3 EXAMPLES FROM Demo
+
+  tandem \
+    'php -S localhost:8000' \
+    'esbuild src/*.ts --bundle --outdir=dist --watch' \
+    'tailwind -i src/index.css -o dist/index.css --watch'
+
+  # Emulate tandem's behaviour
+  PARALLEL='--color --lb  --halt now,done=1 --tagstring '
+  PARALLEL="$PARALLEL'"'{=s/ .*//; $_.=".".$app{$_}++;=}'"'"
+  export PARALLEL
+
+  parallel ::: \
+    'php -S localhost:8000' \
+    'esbuild src/*.ts --bundle --outdir=dist --watch' \
+    'tailwind -i src/index.css -o dist/index.css --watch'
+
+
+=head3 EXAMPLES FROM tandem -h
+
+  # Emulate tandem's behaviour
+  PARALLEL='--color --lb  --halt now,done=1 --tagstring '
+  PARALLEL="$PARALLEL'"'{=s/ .*//; $_.=".".$app{$_}++;=}'"'"
+  export PARALLEL
+
+  1$ tandem 'sleep 5 && echo "hello"' 'sleep 2 && echo "world"'
+
+  1$ parallel ::: 'sleep 5 && echo "hello"' 'sleep 2 && echo "world"'
+
+  # '-t 0' fails. But '--timeout 0 works'
+  2$ tandem --timeout 0 'sleep 5 && echo "hello"' \
+       'sleep 2 && echo "world"'
+
+  2$ parallel --timeout 0 ::: 'sleep 5 && echo "hello"' \
+       'sleep 2 && echo "world"'
+
+=head3 EXAMPLES FROM tandem's readme.md
+
+  # Emulate tandem's behaviour
+  PARALLEL='--color --lb  --halt now,done=1 --tagstring '
+  PARALLEL="$PARALLEL'"'{=s/ .*//; $_.=".".$app{$_}++;=}'"'"
+  export PARALLEL
+
+  1$ tandem 'next dev' 'nodemon --quiet ./server.js'
+
+  1$ parallel ::: 'next dev' 'nodemon --quiet ./server.js'
+
+  2$ cat package.json
+     {
+       "scripts": {
+         "dev:php": "...",
+         "dev:js": "...",
+         "dev:css": "..."
+       }
+     }
+
+     tandem 'npm:dev:php' 'npm:dev:js' 'npm:dev:css'
+
+  # GNU Parallel uses bash functions instead
+  2$ cat package.sh
+     dev:php() { ... ; }
+     dev:js() { ... ; }
+     dev:css() { ... ; }
+     export -f dev:php dev:js dev:css
+
+     . package.sh
+     parallel ::: dev:php dev:js dev:css
+
+  3$ tandem 'npm:dev:*'
+
+  3$ compgen -A function | grep ^dev: | parallel
+
+For usage in Makefiles, include a copy of GNU Parallel with your
+source using `parallel --embed`. This has the added benefit of also
+working if access to the internet is down or restricted.
+
+https://github.com/rosszurowski/tandem
+(Last checked: 2023-01)
+
+
+=head2 DIFFERENCES BETWEEN rust-parallel(aaronriekenberg) AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item I1 I2 I3 - - - -
+
+=item - - - - - M6
+
+=item O1 O2 O3 - O5 O6 - x - O10
+
+=item E1 - - E4 - - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+B<rust-parallel> has a goal of only using Rust. It seems it is
+impossible to call bash functions from the command line. You would
+need to put these in a script.
+
+Calling a script that misses the shebang line (#! as first line)
+fails.
+
+=head3 EXAMPLES FROM rust-parallel's README.md
+
+  $ cat >./test <<EOL
+  echo hi
+  echo there
+  echo how
+  echo are
+  echo you
+  EOL
+  
+  1$ cat test | rust-parallel -j5
+  
+  1$ cat test | parallel -j5
+  
+  2$ cat test | rust-parallel -j1
+  
+  2$ cat test | parallel -j1
+  
+  3$ head -100 /usr/share/dict/words | rust-parallel md5 -s
+  
+  3$ head -100 /usr/share/dict/words | parallel md5 -s
+  
+  4$ find . -type f -print0 | rust-parallel -0 gzip -f -k
+  
+  4$ find . -type f -print0 | parallel -0 gzip -f -k
+  
+  5$ head -100 /usr/share/dict/words |
+       awk '{printf "md5 -s %s\n", $1}' | rust-parallel
+  
+  5$ head -100 /usr/share/dict/words |
+       awk '{printf "md5 -s %s\n", $1}' | parallel
+  
+  6$ head -100 /usr/share/dict/words | rust-parallel md5 -s |
+       grep -i abba
+  
+  6$ head -100 /usr/share/dict/words | parallel md5 -s |
+       grep -i abba
+
+https://github.com/aaronriekenberg/rust-parallel
+(Last checked: 2023-01)
+
+
+=head2 DIFFERENCES BETWEEN parallelium AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item - I2 - - - - -
+
+=item M1 - - - - M6
+
+=item O1 - O3 - - - - x - -
+
+=item E1 - - E4 - - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+B<parallelium> merges standard output (stdout) and standard error
+(stderr). The maximal output of a command is 8192 bytes. Bigger output
+makes B<parallelium> go into an infinite loop.
+
+In the input file for B<parallelium> you can define a tag, so that you
+can select to run only these commands. A bit like a target in a
+Makefile.
+
+Progress is printed on standard output (stdout) prepended with '#'
+with similar information as GNU B<parallel>'s B<--bar>.
+
+=head3 EXAMPLES
+
+    $ cat testjobs.txt
+    #tag common sleeps classA
+    (sleep 4.495;echo "job 000")
+    :
+    (sleep 2.587;echo "job 016")
+    
+    #tag common sleeps classB
+    (sleep 0.218;echo "job 017")
+    :
+    (sleep 2.269;echo "job 040")
+    
+    #tag common sleeps classC
+    (sleep 2.586;echo "job 041")
+    :
+    (sleep 1.626;echo "job 099")
+    
+    #tag lasthalf, sleeps, classB
+    (sleep 1.540;echo "job 100")
+    :
+    (sleep 2.001;echo "job 199")
+
+    1$ parallelium -f testjobs.txt -l logdir -t classB,classC
+
+    1$ cat testjobs.txt |
+         parallel --plus --results logdir/testjobs.txt_{0#}.output \
+           '{= if(/^#tag /) { @tag = split/,|\s+/ }
+               (grep /^(classB|classC)$/, @tag) or skip =}'
+
+https://github.com/beomagi/parallelium
+(Last checked: 2023-01)
+
+
+=head2 DIFFERENCES BETWEEN forkrun AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item I1 - - - - - I7
+
+=item - - - - - -
+
+=item - O2 O3 - O5 - - - - O10
+
+=item E1 - - E4 - - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+
+B<forkrun> blocks if it receives fewer jobs than slots:
+
+  echo | forkrun -p 2 echo
+
+or when it gets some specific commands e.g.:
+
+  f() { seq "$@" | pv -qL 3; }
+  seq 10 | forkrun f
+
+It is not clear why.
+
+It is faster than GNU B<parallel> (overhead: 1.2 ms/job vs 3 ms/job),
+but way slower than B<parallel-bash> (0.059 ms/job).
+
+Running jobs cannot be stopped by pressing CTRL-C.
+
+B<-k> is supposed to keep the order but fails on the MIX testing
+example below. If used with B<-k> it caches output in RAM.
+
+If B<forkrun> is killed, it leaves temporary files in
+B</tmp/.forkrun.*> that has to be cleaned up manually.
+
+=head3 EXAMPLES
+
+  1$ time find ./ -type f |
+       forkrun -l512 -- sha256sum 2>/dev/null | wc -l
+  1$ time find ./ -type f |
+       parallel -j28 -m -- sha256sum 2>/dev/null | wc -l
+
+  2$ time find ./ -type f |
+       forkrun -l512 -k -- sha256sum 2>/dev/null | wc -l
+  2$ time find ./ -type f |
+       parallel -j28 -k -m -- sha256sum 2>/dev/null | wc -l
+
+https://github.com/jkool702/forkrun
+(Last checked: 2023-02)
+
+
+=head2 DIFFERENCES BETWEEN parallel-sh AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item I1 I2 - I4 - - -
+
+=item M1 - - - - M6
+
+=item O1 O2 O3 - O5 O6 - - - O10
+
+=item E1 - - E4 - - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+B<parallel-sh> buffers in RAM. The buffering data takes O(n^1.5) time:
+
+2MB=0.107s 4MB=0.175s 8MB=0.342s 16MB=0.766s 32MB=2.2s 64MB=6.7s
+128MB=20s 256MB=64s 512MB=248s 1024MB=998s 2048MB=3756s
+
+It limits the practical usability to jobs outputting < 256 MB. GNU
+B<parallel> buffers on disk, yet is faster for jobs with outputs > 16
+MB and is only limited by the free space in $TMPDIR.
+
+B<parallel-sh> can kill running jobs if a job fails (Similar to
+B<--halt now,fail=1>).
+
+=head3 EXAMPLES
+
+  1$ parallel-sh "sleep 2 && echo first" "sleep 1 && echo second"
+
+  1$ parallel ::: "sleep 2 && echo first" "sleep 1 && echo second"
+
+  2$ cat /tmp/commands
+     sleep 2 && echo first
+     sleep 1 && echo second
+
+  2$ parallel-sh -f /tmp/commands
+
+  2$ parallel -a /tmp/commands
+
+  3$ echo -e 'sleep 2 && echo first\nsleep 1 && echo second' |
+       parallel-sh
+
+  3$ echo -e 'sleep 2 && echo first\nsleep 1 && echo second' |
+       parallel
+
+https://github.com/thyrc/parallel-sh
+(Last checked: 2023-04)
+
+
+=head2 DIFFERENCES BETWEEN bash-parallel AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item - I2 - - - - I7
+
+=item M1 - M3 - M5 M6
+
+=item - O2 O3 - - O6 - O8 - O10
+
+=item E1 - - - - - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+B<bash-parallel> is not as much a command as it is a shell script that
+you have to alter. It requires you to change the shell function
+process_job that runs the job, and set $MAX_POOL_SIZE to the number of
+jobs to run in parallel.
+
+It is half as fast as GNU B<parallel> for short jobs.
+
+https://github.com/thilinaba/bash-parallel
+(Last checked: 2023-05)
+
+
+=head2 DIFFERENCES BETWEEN PaSH AND GNU Parallel
+
+Summary (see legend above): N/A
+
+B<pash> is quite different from GNU B<parallel>. It is not a general
+parallelizer. It takes a shell script and analyses it and parallelizes
+parts of it by replacing the parts with commands that will give the same
+result.
+
+This will replace B<sort> with a command that does pretty much the
+same as B<parsort --parallel=8> (except somewhat slower):
+
+  pa.sh --width 8 -c 'cat bigfile | sort'
+
+However, even a simple change will confuse B<pash> and you will get no
+parallelization:
+
+  pa.sh --width 8 -c 'mysort() { sort; }; cat bigfile | mysort'
+  pa.sh --width 8 -c 'cat bigfile | sort | md5sum'
+
+From the source it seems B<pash> only looks at: awk cat col comm cut
+diff grep head mkfifo mv rm sed seq sort tail tee tr uniq wc xargs
+
+For pipelines where these commands are bottlenecks, it might be worth
+testing if B<pash> is faster than GNU B<parallel>.
+
+B<pash> does not respect $TMPDIR but always uses /tmp. If B<pash> dies
+unexpectantly it does not clean up.
+
+https://github.com/binpash/pash
+(Last checked: 2023-05)
+
+
+=head2 DIFFERENCES BETWEEN korovkin-parallel AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item I1 - - - - - -
+
+=item M1 - - - - M6
+
+=item - - O3 - - - - x x -
+
+=item E1 - - - - - -
+
+=item R1 - - - - R6 x x -
+
+=item - -
+
+=back
+
+B<korovkin-parallel> prepends all lines with some info.
+
+The output is colored with 6 color combinations, so job 1 and 7 will
+get the same color.
+
+You can get similar output with:
+
+  (echo ...) |
+    parallel --color -j 10 --lb --tagstring \
+      '[l:{#}:{=$_=sprintf("%7.03f",::now()-$^T)=} {=$_=hh_mm_ss($^T)=} {%}]'
+
+Lines longer than 8192 chars are broken into lines shorter than
+8192. B<korovkin-parallel> loses the last char for lines exactly 8193
+chars long.
+
+Short lines from different jobs do not mix, but long lines do:
+
+  fun() {
+    perl -e '$a="'$1'"x1000000; for(1..'$2') { print $a };';
+    echo;
+  }
+  export -f fun
+  (echo fun a 100;echo fun b 100) | korovkin-parallel | tr -s abcdef
+  # Compare to:
+  (echo fun a 100;echo fun b 100) | parallel | tr -s abcdef
+
+There should be only one line of a's and one line of b's.
+
+Just like GNU B<parallel> B<korovkin-parallel> offers a master/slave
+model, so workers on other servers can do some of the tasks. But
+contrary to GNU B<parallel> you must manually start workers on these
+servers. The communication is neither authenticated nor encrypted.
+
+It caches output in RAM: a 1GB line uses ~2.5GB RAM
+
+https://github.com/korovkin/parallel
+(Last checked: 2023-07)
+
+
+=head2 DIFFERENCES BETWEEN xe AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item I1 I2 - I4 - - I7
+
+=item M1 - M3 M4 - M6
+
+=item - O2 O3 - O5 O6 - O8 - O10
+
+=item E1 - - E4 - - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+B<xe> has a peculiar limitation:
+
+  echo /bin/echo | xe {} OK
+  echo echo | xe /bin/{} fails
+
+
+=head3 EXAMPLES
+
+Compress all .c files in the current directory, using all CPU cores:
+
+  1$ xe -a -j0 gzip -- *.c
+
+  1$ parallel gzip ::: *.c
+
+Remove all empty files, using lr(1):
+
+  2$ lr -U -t 'size == 0' | xe -N0 rm
+
+  2$ lr -U -t 'size == 0' | parallel -X rm
+
+Convert .mp3 to .ogg, using all CPU cores:
+
+  3$ xe -a -j0 -s 'ffmpeg -i "${1}" "${1%.mp3}.ogg"' -- *.mp3
+
+  3$ parallel ffmpeg -i {} {.}.ogg ::: *.mp3
+
+Same, using percent rules:
+
+  4$ xe -a -j0 -p %.mp3 ffmpeg -i %.mp3 %.ogg -- *.mp3
+
+  4$ parallel --rpl '% s/\.mp3// or skip' ffmpeg -i %.mp3 %.ogg ::: *.mp3
+
+Similar, but hiding output of ffmpeg, instead showing spawned jobs:
+
+  5$ xe -ap -j0 -vvq '%.{m4a,ogg,opus}' ffmpeg -y -i {} out/%.mp3 -- *
+
+  5$ parallel -v --rpl '% s/\.(m4a|ogg|opus)// or skip' \
+       ffmpeg -y -i {} out/%.mp3 '2>/dev/null' ::: *
+
+  5$ parallel -v ffmpeg -y -i {} out/{.}.mp3 '2>/dev/null' ::: *
+
+https://github.com/leahneukirchen/xe
+(Last checked: 2023-08)
+
+
+=head2 DIFFERENCES BETWEEN sp AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item - - - I4 - - -
+
+=item M1 - M3 - - M6
+
+=item - O2 O3 - O5 (O6) - x x O10
+
+=item E1 - - - - - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+B<sp> has very few options.
+
+It can either be used like:
+
+  sp command {} option :: arg1 arg2 arg3
+
+which is similar to:
+
+  parallel command {} option ::: arg1 arg2 arg3
+
+Or:
+
+  sp command1 :: "command2 -option" :: "command3 foo bar"
+
+which is similar to:
+
+  parallel ::: command1 "command2 -option" "command3 foo bar"
+
+B<sp> deals badly with too many commands: This causes B<sp> to run out
+of file handles and gives data loss.
+
+For each command that fails, B<sp> will print an error message on
+stderr (standard error).
+
+You cannot used exported shell functions as commands.
+
+=head3 EXAMPLES
+
+  1$ sp echo {} :: 1 2 3
+
+  1$ parallel echo {} ::: 1 2 3
+
+  2$ sp echo {} {} :: 1 2 3
+
+  2$ parallel echo {} {} :: 1 2 3
+
+  3$ sp echo 1 :: echo 2 :: echo 3
+
+  3$ parallel ::: 'echo 1' 'echo 2' 'echo 3'
+
+  4$ sp a foo bar :: "b 'baz  bar'" :: c
+
+  4$ parallel ::: 'a foo bar' "b 'baz  bar'" :: c
+
+https://github.com/SergioBenitez/sp
+(Last checked: 2023-10)
+
+
+=head2 DIFFERENCES BETWEEN repeater AND GNU Parallel
+
+Summary (see legend above):
+
+=over
+
+=item - - - - - - -
+
+=item - - - - - -
+
+=item - O2 O3 N/A - O6 - x x ?O10
+
+=item E1 - - - E5 - -
+
+=item - - - - - - - - -
+
+=item - -
+
+=back
+
+B<repeater> runs the same job repeatedly. In other words: It does not
+read arguments, thus is it an alternative for GNU B<parallel> for only
+quite limited applications.
+
+B<repeater> has an overhead of around 0.23 ms/job. Compared to GNU
+B<parallel>'s 2-3 ms this is fast. Compared to B<bash-parallel>'s 0.05
+ms/job it is slow.
+
+=head3 Memory use and run time for large output
+
+Output takes O(n^2) time for output of size n. 10 MB takes ~1 second,
+30 MB takes ~7 seconds, 100 MB takes ~60 seconds, 300 MB takes ~480
+seconds, 1000 GB takes
+
+100 MB of output takes around 1 GB of RAM.
+
+    # Run time = 15 sec
+    # Memory use = 20 MB
+    # Output = 1 GB per job
+    \time -v parallel -j1 seq ::: 120000000 120000000 >/dev/null
+
+    # Run time = 4.7 sec
+    # Memory use = 95 MB
+    # Output = 8 MB per job
+    \time -v repeater -w 1 -n 2 -reportFile ./run_output seq 1200000 >/dev/null
+
+    # Run time = 42 sec
+    # Memory use = 277 MB
+    # Output = 27 MB per job
+    \time -v repeater -w 1 -n 2 -reportFile ./run_output seq 3600000 >/dev/null
+
+    # Run time = 530 sec
+    # Memory use = 1000 MB
+    # Output = 97 MB per job
+    \time -v repeater -w 1 -n 2 -reportFile ./run_output seq 12000000 >/dev/null
+
+    # Run time = 2h41m
+    # Memory use = 8.6 GB
+    # Output = 1 GB per job
+    \time -v repeater -w 1 -n 2 -reportFile ./run_output seq 120000000 >/dev/null
+
+For even just moderate sized outputs GNU B<parallel> will be faster
+and use less memory.
+
+
+=head3 EXAMPLES
+
+  1$ repeater -n 100 -w 10 -reportFile ./run_output
+       -output REPORT_FILE -progress BOTH curl example.com
+
+  1$ seq 100 | parallel --joblog run.log --eta curl example.com > output
+
+  2$ repeater -n 100 -increment -progress HIDDEN -reportFile foo
+       echo "this is increment: " INC
+  2$ seq 100 | parallel echo {}
+  2$ seq 100 | parallel echo '{= $_ = ++$myvar =}'
+
+https://github.com/baalimago/repeater
+(Last checked: 2023-12)
+
+
 =head2 Todo
+
+https://github.com/justanhduc/task-spooler
+
+https://manpages.ubuntu.com/manpages/xenial/man1/tsp.1.html
+
+https://www.npmjs.com/package/concurrently
 
 http://code.google.com/p/push/ (cannot compile)
 
@@ -3356,8 +4372,6 @@ https://github.com/krashanoff/parallel
 https://github.com/Nukesor/pueue
 
 https://arxiv.org/pdf/2012.15443.pdf KumQuat
-
-https://arxiv.org/pdf/2007.09436.pdf PaSH: Light-touch Data-Parallel Shell Processing
 
 https://github.com/JeiKeiLim/simple_distribute_job
 
@@ -3371,11 +4385,10 @@ https://github.com/flesler/parallel
 
 https://github.com/Julian/Verge
 
-https://manpages.ubuntu.com/manpages/xenial/man1/tsp.1.html
-
 https://vicerveza.homeunix.net/~viric/soft/ts/
 
 https://github.com/chapmanjacobd/que
+
 
 
 =head1 TESTING OTHER TOOLS
@@ -3398,7 +4411,7 @@ This test stresses whether output mixes.
 
   #!/bin/bash
 
-  paralleltool="parallel -j0"
+  paralleltool="parallel -j 30"
 
   cat <<-EOF > mycommand
   #!/bin/bash
@@ -3496,7 +4509,8 @@ full for at least 2 seconds.
       # Generate 100 GB to fill $TMPDIR
       # Adjust if /tmp is bigger than 100 GB
       yes | head -c 100G >$TMPDIR/$$
-      # Generate 10 MB output that will not be buffered due to full disk
+      # Generate 10 MB output that will not be buffered
+      # due to full disk
       perl -e 'print "X"x10_000_000' | head -c 10M
       echo This part is missing from incomplete output
       sleep 2
@@ -3620,7 +4634,7 @@ Copyright (C) 2007-10-18 Ole Tange, http://ole.tange.dk
 
 Copyright (C) 2008-2010 Ole Tange, http://ole.tange.dk
 
-Copyright (C) 2010-2021 Ole Tange, http://ole.tange.dk and Free
+Copyright (C) 2010-2024 Ole Tange, http://ole.tange.dk and Free
 Software Foundation, Inc.
 
 Parts of the manual concerning B<xargs> compatibility is inspired by
