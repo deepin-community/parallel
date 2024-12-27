@@ -1,13 +1,19 @@
 #!/usr/bin/env sh
 
-# This file must be sourced in sh:
+# This file must be sourced in sh/ash/dash/bash/ksh/mksh/zsh:
 #
-#   . `which env_parallel.sh`
+#   . env_parallel.sh
+#   source env_parallel.ash
+#   source env_parallel.dash
+#   source env_parallel.bash
+#   source env_parallel.ksh
+#   source env_parallel.mksh
+#   source env_parallel.zsh
 #
 # after which 'env_parallel' works
 #
 #
-# Copyright (C) 2016-2021 Ole Tange, http://ole.tange.dk and Free
+# Copyright (C) 2016-2024 Ole Tange, http://ole.tange.dk and Free
 # Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -25,14 +31,36 @@
 # or write to the Free Software Foundation, Inc., 51 Franklin St,
 # Fifth Floor, Boston, MA 02110-1301 USA
 #
-# SPDX-FileCopyrightText: 2021 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
+# SPDX-FileCopyrightText: 2021-2024 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
 # SPDX-License-Identifier: GPL-3.0-or-later
 # shellcheck disable=SC2006
 
 env_parallel() {
-    # env_parallel.sh
+    # env_parallel.{sh,ash,dash,bash,ksh,mksh,zsh}
 
+    # Check shell dialect
+    if [ -n "$BASH_VERSION" ]; then
+	_shell_DIALECT=bash
+	_eval_needed=false
+	_prefix_PARALLEL_ENV=_prefix_PARALLEL_ENV_bash
+    elif [ -n "$ZSH_VERSION" ]; then
+	_shell_DIALECT=zsh
+	_eval_needed=true
+	_prefix_PARALLEL_ENV=false
+    elif [ -n "$KSH_VERSION" ]; then
+	_shell_DIALECT=ksh
+	_eval_needed=false
+	_prefix_PARALLEL_ENV=false
+    else
+	# Dash/ash - can these be detected better?
+	_shell_DIALECT="sh"
+	_eval_needed=false
+	_prefix_PARALLEL_ENV=false
+    fi
     _names_of_ALIASES() {
+	_names_of_ALIASES_$_shell_DIALECT
+    }
+    _names_of_ALIASES_sh() {
 	# alias fails on Unixware 5
 	for _i in `alias 2>/dev/null | perl -ne 's/^alias //;s/^(\S+)=.*/$1/ && print' 2>/dev/null`; do
 	    # Check if this name really is an alias
@@ -42,7 +70,22 @@ env_parallel() {
 	    fi
 	done
     }
+    _names_of_ALIASES_bash() {
+	# No aliases will return false. This error should be ignored.
+	# shellcheck disable=SC3044
+	compgen -a || true
+    }
+    _names_of_ALIASES_ksh() {
+	alias | perl -pe 's/=.*//'
+    }
+    _names_of_ALIASES_zsh() {
+	# shellcheck disable=SC2086,SC2296
+	print -l ${(k)aliases}
+    }
     _bodies_of_ALIASES() {
+	_bodies_of_ALIASES_$_shell_DIALECT "$@"
+    }
+    _bodies_of_ALIASES_sh() {
 	# alias may return:
 	#   myalias='definition' (GNU/Linux ash)
 	#   alias myalias='definition' (FreeBSD ash)
@@ -51,23 +94,104 @@ env_parallel() {
 		echo 'alias '"`alias "$_i" | perl -pe '1..1 and s/^alias //'`"
 	done
     }
+    _bodies_of_ALIASES_bash() {
+	# shellcheck disable=SC3043
+	local _i
+	for _i in "$@"; do
+	    # shellcheck disable=SC2046
+	    if [ $(alias "$_i" | wc -l) = 1 ] ; then
+		true Alias is a single line. Good.
+	    else
+		_warning_PAR "Alias '$_i' contains newline."
+		_warning_PAR "Make sure the command has at least one newline after '$_i'."
+		_warning_PAR "See BUGS in 'man env_parallel'."
+	    fi
+	done
+	alias "$@"
+    }
+    _bodies_of_ALIASES_ksh() {
+	alias "$@" | perl -pe 's/^/alias /;
+                     sub warning { print STDERR "env_parallel: Warning: @_\n"; }
+                     if(/^alias (\S+)=\$.*\\n/) {
+ 		         warning("Alias \"$1\" contains newline.");
+		         warning("Make sure the command has at least one newline after \"$1\".");
+		         warning("See BUGS in \"man env_parallel\".");
+                     }'
+
+    }
+    _bodies_of_ALIASES_zsh() {
+	# shellcheck disable=SC3043
+	local _i
+	for _i in "$@"; do
+		echo 'alias '"$(alias "$_i")"
+	done
+    }
+    _names_of_FUNCTIONS() {
+	_names_of_FUNCTIONS_$_shell_DIALECT
+    }
+    _names_of_FUNCTIONS_bash() {
+	# shellcheck disable=SC3044
+	compgen -A function
+    }
     _names_of_maybe_FUNCTIONS() {
 	set | perl -ne '/^([A-Z_0-9]+)\s*\(\)\s*\{?$/i and print "$1\n"'
     }
-    _names_of_FUNCTIONS() {
+    _names_of_FUNCTIONS_sh() {
 	# myfunc is a function
 	# shellcheck disable=SC2046
 	LANG=C type `_names_of_maybe_FUNCTIONS` |
 	    perl -ne '/^(\S+) is a function$/ and not $seen{$1}++ and print "$1\n"'
     }
+    _names_of_FUNCTIONS_ksh() {
+	# shellcheck disable=SC3044
+	typeset +f | perl -pe 's/\(\).*//; s/ .*//;'
+    }
+    _names_of_FUNCTIONS_zsh() {
+	# shellcheck disable=SC2086,SC2296
+	print -l ${(k)functions}
+    }
     _bodies_of_FUNCTIONS() {
+	_bodies_of_FUNCTIONS_$_shell_DIALECT "$@"
+    }
+    _bodies_of_FUNCTIONS_sh() {
 	LANG=C type "$@" | perl -ne '/^(\S+) is a function$/ or print'
     }
+    _bodies_of_FUNCTIONS_bash() {
+	# shellcheck disable=SC3044
+	typeset -f "$@"
+    }
+    _bodies_of_FUNCTIONS_ksh() {
+	functions "$@"
+    }
+    _bodies_of_FUNCTIONS_zsh() {
+	# shellcheck disable=SC3044
+	typeset -f "$@"
+    }
     _names_of_VARIABLES() {
+	_names_of_VARIABLES_$_shell_DIALECT
+    }
+    _names_of_VARIABLES_sh() {
 	# This may screw up if variables contain \n and =
 	set | perl -ne 's/^(\S+?)=.*/$1/ and print;'
     }
+    _names_of_VARIABLES_bash() {
+	# shellcheck disable=SC3044
+	compgen -A variable
+    }
+    _names_of_VARIABLES_ksh() {
+	# shellcheck disable=SC3044
+	typeset +p |
+	    perl -pe 's/^(type)?set( [-+][a-zA-Z0-9]*)* //; s/(\[\d+\])?=.*//' |
+	    uniq
+    }
+    _names_of_VARIABLES_zsh() {
+	# shellcheck disable=SC2086,SC2296
+	print -l ${(k)parameters}
+    }
     _bodies_of_VARIABLES() {
+	_bodies_of_VARIABLES_$_shell_DIALECT "$@"
+    }
+    _bodies_of_VARIABLES_sh() {
 	# Crappy typeset -p
 	for _i in "$@"
 	do
@@ -77,18 +201,50 @@ env_parallel() {
 	    echo
 	done
     }
+    _bodies_of_VARIABLES_bash() {
+	# shellcheck disable=SC3044
+	typeset -p "$@"
+    }
+    _bodies_of_VARIABLES_ksh() {
+	# shellcheck disable=SC3044
+	typeset -p "$@"
+    }
+    _bodies_of_VARIABLES_zsh() {
+	# shellcheck disable=SC3044
+	typeset -p "$@"
+    }
     _ignore_HARDCODED() {
+	_ignore_HARDCODED_$_shell_DIALECT
+    }
+    _ignore_HARDCODED_sh() {
 	# These names cannot be detected
-	echo '(_|TIMEOUT)'
+	echo '(_|TIMEOUT|IFS)'
+    }
+    _ignore_HARDCODED_bash() {
+	# Copying $RANDOM will cause it not to be random
+	# The rest cannot be detected as read-only
+	echo '(RANDOM|_|TIMEOUT|GROUPS|FUNCNAME|DIRSTACK|PIPESTATUS|USERNAME|BASHPID|BASH_[A-Z_]+)'
+    }
+    _ignore_HARDCODED_ksh() {
+	# These names cannot be detected
+	echo '(_|TIMEOUT|IFS)'
+    }
+    _ignore_HARDCODED_zsh() {
+	# These names cannot be detected
+	echo '([-\?\#\!\$\*\@\_0]|zsh_eval_context|ZSH_EVAL_CONTEXT|LINENO|IFS|commands|functions|options|aliases|EUID|EGID|UID|GID|dis_patchars|patchars|terminfo|galiases|keymaps|parameters|jobdirs|dirstack|functrace|funcsourcetrace|zsh_scheduled_events|dis_aliases|dis_reswords|dis_saliases|modules|reswords|saliases|widgets|userdirs|historywords|nameddirs|termcap|dis_builtins|dis_functions|jobtexts|funcfiletrace|dis_galiases|builtins|history|jobstates|funcstack|run-help)'
     }
     _ignore_READONLY() {
+	_ignore_READONLY_$_shell_DIALECT
+    }
+    _parse_READONLY() {
 	# shellcheck disable=SC1078,SC1079,SC2026
-	readonly | perl -e '@r = map {
+	perl -e '@r = map {
                 chomp;
                 # sh on UnixWare: readonly TIMEOUT
 	        # ash: readonly var='val'
 	        # ksh: var='val'
-                s/^(readonly )?([^= ]*)(=.*|)$/$2/ or
+		# mksh: PIPESTATUS[0]
+                s/^(readonly )?([^=\[ ]*?)(\[\d+\])?(=.*|)$/$2/ or
 	        # bash: declare -ar BASH_VERSINFO=([0]="4" [1]="4")
 	        # zsh: typeset -r var='val'
                   s/^\S+\s+\S+\s+(\S[^=]*)(=.*|$)/$1/;
@@ -97,13 +253,26 @@ env_parallel() {
             print $vars ? "($vars)" : "(,,nO,,VaRs,,)";
             '
     }
+    _ignore_READONLY_sh() {
+	readonly | _parse_READONLY
+    }
+    _ignore_READONLY_bash() {
+	readonly | _parse_READONLY
+    }
+    _ignore_READONLY_ksh() {
+	readonly | _parse_READONLY
+    }
+    _ignore_READONLY_zsh() {
+	# shellcheck disable=SC3044
+	typeset -pr | _parse_READONLY
+    }
     _remove_bad_NAMES() {
 	# Do not transfer vars and funcs from env_parallel
+	# shellcheck disable=SC2006
 	_ignore_RO="`_ignore_READONLY`"
+	# shellcheck disable=SC2006
 	_ignore_HARD="`_ignore_HARDCODED`"
-	# Macos-grep does not like long patterns
-	# Old Solaris grep does not support -E
-	# Perl Version of:
+	# To avoid depending on grep dialect, use Perl version of:
 	# grep -Ev '^(...)$' |
 	perl -ne '/^(
 		     PARALLEL_ENV|
@@ -131,7 +300,7 @@ env_parallel() {
 		     _names_of_maybe_FUNCTIONS|
 		     _parallel_exit_CODE|
 		     _prefix_PARALLEL_ENV|
-		     _prefix_PARALLEL_ENV|
+		     _prefix_PARALLEL_ENV_bash|
 		     _remove_bad_NAMES|
 		     _remove_readonly|
 		     _variable_NAMES|
@@ -145,6 +314,15 @@ env_parallel() {
             /^'"$_ignore_HARD"'$/ and next;
             print;'
     }
+    _prefix_PARALLEL_ENV_bash() {
+	# shellcheck disable=SC3044
+        shopt 2>/dev/null |
+        perl -pe 's:\s+off:;: and s/^/shopt -u /;
+                  s:\s+on:;: and s/^/shopt -s /;
+                  s:;$:&>/dev/null;:';
+        echo 'shopt -s expand_aliases &>/dev/null';
+    }
+
     _get_ignored_VARS() {
         perl -e '
             for(@ARGV){
@@ -221,10 +399,12 @@ env_parallel() {
     fi
 
     # Grep regexp for vars given by --env
+    # shellcheck disable=SC2006
     _grep_REGEXP="`_make_grep_REGEXP \"$@\"`"
     unset _make_grep_REGEXP
 
     # Deal with --env _
+    # shellcheck disable=SC2006
     _ignore_UNDERSCORE="`_get_ignored_VARS \"$@\"`"
     unset _get_ignored_VARS
 
@@ -245,6 +425,7 @@ env_parallel() {
     else
 	# Insert ::: between each level of session
 	# so you can pop off the last ::: at --end-session
+	# shellcheck disable=SC2006
 	PARALLEL_IGNORED_NAMES="`echo \"$PARALLEL_IGNORED_NAMES\";
           echo :::;
           (_names_of_ALIASES;
@@ -268,6 +449,7 @@ env_parallel() {
 	true skip
     else
 	# Pop off last ::: from PARALLEL_IGNORED_NAMES
+	# shellcheck disable=SC2006
 	PARALLEL_IGNORED_NAMES="`perl -e '
           $ENV{PARALLEL_IGNORED_NAMES} =~ s/(.*):::.*?$/$1/s;
 	  print $ENV{PARALLEL_IGNORED_NAMES}
@@ -275,6 +457,7 @@ env_parallel() {
 	return 0
     fi
     # Grep alias names
+    # shellcheck disable=SC2006
     _alias_NAMES="`_names_of_ALIASES | _remove_bad_NAMES | xargs echo`"
     _list_alias_BODIES="_bodies_of_ALIASES $_alias_NAMES"
     if [ "$_alias_NAMES" = "" ] ; then
@@ -284,6 +467,7 @@ env_parallel() {
     unset _alias_NAMES
 
     # Grep function names
+    # shellcheck disable=SC2006
     _function_NAMES="`_names_of_FUNCTIONS | _remove_bad_NAMES | xargs echo`"
     _list_function_BODIES="_bodies_of_FUNCTIONS $_function_NAMES"
     if [ "$_function_NAMES" = "" ] ; then
@@ -293,6 +477,7 @@ env_parallel() {
     unset _function_NAMES
 
     # Grep variable names
+    # shellcheck disable=SC2006
     _variable_NAMES="`_names_of_VARIABLES | _remove_bad_NAMES | xargs echo`"
     _list_variable_VALUES="_bodies_of_VARIABLES $_variable_NAMES"
     if [ "$_variable_NAMES" = "" ] ; then
@@ -301,20 +486,52 @@ env_parallel() {
     fi
     unset _variable_NAMES
 
-    PARALLEL_ENV="`
-        $_list_alias_BODIES;
-        $_list_function_BODIES;
-        $_list_variable_VALUES;
-    `"
+    if $_eval_needed ; then
+	# shellcheck disable=SC2006
+	PARALLEL_ENV="`
+	eval $_prefix_PARALLEL_ENV;
+        eval $_list_alias_BODIES;
+ 	eval $_list_function_BODIES;
+        eval $_list_variable_VALUES;
+	`"
+    else
+	# shellcheck disable=SC2006
+	PARALLEL_ENV="`
+	$_prefix_PARALLEL_ENV;
+	$_list_alias_BODIES;
+	$_list_function_BODIES;
+	$_list_variable_VALUES;
+	`"
+    fi
     export PARALLEL_ENV
+    # Free up some env space
     unset _list_alias_BODIES _list_variable_VALUES _list_function_BODIES
     unset _bodies_of_ALIASES _bodies_of_VARIABLES _bodies_of_FUNCTIONS
     unset _names_of_ALIASES _names_of_VARIABLES _names_of_FUNCTIONS
     unset _ignore_HARDCODED _ignore_READONLY _ignore_UNDERSCORE
-    unset _remove_bad_NAMES _grep_REGEXP
+    unset _remove_bad_NAMES _grep_REGEXP _parse_READONLY
     unset _prefix_PARALLEL_ENV
-    # Test if environment is too big
-    # shellcheck disable=SC2092
+    unset _ignore_READONLY_sh _ignore_READONLY_bash
+    unset _ignore_READONLY_ksh _ignore_READONLY_zsh
+    unset _ignore_HARDCODED_sh _ignore_HARDCODED_bash
+    unset _ignore_HARDCODED_ksh _ignore_HARDCODED_zsh
+    unset _bodies_of_ALIASES_ksh _bodies_of_ALIASES_sh
+    unset _bodies_of_ALIASES_zsh _bodies_of_FUNCTIONS_bash
+    unset _bodies_of_FUNCTIONS_ksh _bodies_of_FUNCTIONS_sh
+    unset _bodies_of_FUNCTIONS_zsh _bodies_of_VARIABLES_bash
+    unset _bodies_of_VARIABLES_ksh _bodies_of_VARIABLES_sh
+    unset _bodies_of_VARIABLES_zsh
+    unset _names_of_ALIASES _names_of_ALIASES_bash
+    unset _names_of_ALIASES_ksh _names_of_ALIASES_sh
+    unset _names_of_ALIASES_zsh _names_of_FUNCTIONS
+    unset _names_of_FUNCTIONS_bash _names_of_FUNCTIONS_ksh
+    unset _names_of_FUNCTIONS_sh _names_of_FUNCTIONS_zsh
+    unset _names_of_VARIABLES _names_of_VARIABLES_bash
+    unset _names_of_VARIABLES_ksh _names_of_VARIABLES_sh
+    unset _names_of_VARIABLES_zsh _names_of_maybe_FUNCTIONS
+
+    # Test if environment is too big by running 'true'
+    # shellcheck disable=SC2006,SC2092
     if `_which_PAR true` >/dev/null 2>/dev/null ; then
 	parallel "$@"
 	_parallel_exit_CODE=$?
@@ -368,13 +585,6 @@ _parset_main() {
     #   parset "var_a4 var_b4 var_c4" echo ::: {1..3}
     #   echo $var_c4
 
-    _make_TEMP() {
-	# mktemp does not exist on some OS
-	perl -e 'use File::Temp qw(tempfile);
-                 $ENV{"TMPDIR"} ||= "/tmp";
-                 print((tempfile(DIR=>$ENV{"TMPDIR"}, TEMPLATE => "parXXXXX"))[1])'
-    }
-
     _parset_NAME="$1"
     if [ "$_parset_NAME" = "" ] ; then
 	echo parset: Error: No destination variable given. >&2
@@ -390,8 +600,9 @@ _parset_main() {
 	return 255
     fi
     if [ "$_parset_NAME" = "--version" ] ; then
-	echo "parset 20210822 (GNU parallel `parallel --minversion 1`)"
-	echo "Copyright (C) 2007-2021 Ole Tange, http://ole.tange.dk and Free Software"
+	# shellcheck disable=SC2006
+	echo "parset 20240222 (GNU parallel `parallel --minversion 1`)"
+	echo "Copyright (C) 2007-2024 Ole Tange, http://ole.tange.dk and Free Software"
 	echo "Foundation, Inc."
 	echo "License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>"
 	echo "This is free software: you are free to change and redistribute it."
@@ -405,46 +616,21 @@ _parset_main() {
 	return 255
     fi
     shift
-    echo "$_parset_NAME" |
-	perl -ne 'chomp;for (split /[, ]/) {
-            # Allow: var_32 var[3]
-	    if(not /^[a-zA-Z_][a-zA-Z_0-9]*(\[\d+\])?$/) {
-                print STDERR "parset: Error: $_ is an invalid variable name.\n";
-                print STDERR "parset: Error: Variable names must be letter followed by letters or digits.\n";
-		print STDERR "parset: Error: Usage:\n";
-		print STDERR "parset: Error:   parset varname GNU Parallel options and command\n";
-                $exitval = 255;
-            }
-        }
-        exit $exitval;
-        ' || return 255
-    _exit_FILE=`_make_TEMP`
-    if perl -e 'exit not grep /,| /, @ARGV' "$_parset_NAME" ; then
-	# $_parset_NAME contains , or space
-	# Split on , or space to get the names
-	# shellcheck disable=SC2016,SC2046
-	eval "`
-	    # Compute results into files
-	    ($_parset_PARALLEL_PRG --files -k "$@"; echo $? > "$_exit_FILE") |
-		# var1= cat tmpfile1; rm tmpfile1
-		# var2= cat tmpfile2; rm tmpfile2
-		parallel --plain -q echo '{2}=\`cat {1}; rm {1}\`' :::: - :::+ \`
-		    echo "$_parset_NAME" |
-			perl -pe 's/,/ /g'
-			 \`
-	    `"
+
+    # Bash: declare -A myassoc=( )
+    # Zsh: typeset -A myassoc=( )
+    # Ksh: typeset -A myassoc=( )
+    # shellcheck disable=SC2039,SC2169,SC3044
+    if (typeset -p "$_parset_NAME" 2>/dev/null; echo) |
+	    perl -ne 'exit not (/^declare[^=]+-A|^typeset[^=]+-A/)' ; then
+	# This is an associative array
+	# shellcheck disable=SC2006
+	eval "`$_parset_PARALLEL_PRG -k --_parset assoc,"$_parset_NAME" "$@"`"
+	# The eval returns the function!
     else
-	# $_parset_NAME does not contain , or space
-	# => $_parset_NAME is the name of the array to put data into
-	# Supported in: bash zsh ksh mksh
-	# Arrays do not work in: sh ash dash
-	eval "$_parset_NAME=( $(
-	    # Compute results into files. Save exit value
-	    ($_parset_PARALLEL_PRG --files -k "$@"; echo $? > "$_exit_FILE") |
-                perl -pe 'chop;$_="\"\`cat $_; rm $_\`\" "'
-            ) )"
+	# This is a normal array or a list of variable names
+	# shellcheck disable=SC2006
+	eval "`$_parset_PARALLEL_PRG -k --_parset var,"$_parset_NAME" "$@"`"
+	# The eval returns the function!
     fi
-    unset _parset_NAME _parset_PARALLEL_PRG _parallel_exit_CODE
-    # Unset _exit_FILE before return
-    eval "unset _exit_FILE; return \`cat $_exit_FILE; rm $_exit_FILE\`"
 }

@@ -26,15 +26,22 @@ Description: Remove overreaching citation notice
  .
  Thus this patch is again up for discussion.
 
+Comment: Upstream has enforced his statement by adding
+    # You accept to be put in a public hall of shame by removing
+    # these lines.
+ before the code lines we change in a patch.  Andreas Tille does not think that this
+ kind of statements invalidate the right to change the code as it is granted by GPL
+ and was discussed above.
+
 Author: Didier Raboud <odyx@debian.org>
         Ian Turner <vectro@vectro.org> (for the documentation parts)
 Bug-Debian: https://bugs.debian.org/905674
 
-Last-Update: 2021-08-28
+Last-Update:  Andreas Tille  Wed, 27 Jul 2022 09:27:03 +0200
 
---- a/src/env_parallel.dash
-+++ b/src/env_parallel.dash
-@@ -395,7 +395,7 @@ _parset_main() {
+--- parallel.orig/src/env_parallel.dash
++++ parallel/src/env_parallel.dash
+@@ -611,7 +611,7 @@
  	echo "Web site: https://www.gnu.org/software/parallel"
  	echo
  	echo "When using programs that use GNU Parallel to process data for publication"
@@ -43,9 +50,9 @@ Last-Update: 2021-08-28
  	echo
  	return 255
      fi
---- a/src/env_parallel.ksh
-+++ b/src/env_parallel.ksh
-@@ -373,7 +373,7 @@ _parset_main() {
+--- parallel.orig/src/env_parallel.ksh
++++ parallel/src/env_parallel.ksh
+@@ -611,7 +611,7 @@
  	echo "Web site: https://www.gnu.org/software/parallel"
  	echo
  	echo "When using programs that use GNU Parallel to process data for publication"
@@ -54,9 +61,9 @@ Last-Update: 2021-08-28
  	echo
  	return 255
      fi
---- a/src/env_parallel.pod
-+++ b/src/env_parallel.pod
-@@ -800,9 +800,6 @@ When using GNU B<env_parallel> for a pub
+--- parallel.orig/src/env_parallel.pod
++++ parallel/src/env_parallel.pod
+@@ -807,9 +807,6 @@
  O. Tange (2018): GNU Parallel 2018, March 2018, ISBN 9781387509881,
  DOI: 10.5281/zenodo.1146014.
  
@@ -66,9 +73,9 @@ Last-Update: 2021-08-28
  Copyright (C) 2007-10-18 Ole Tange, http://ole.tange.dk
  
  Copyright (C) 2008-2010 Ole Tange, http://ole.tange.dk
---- a/src/env_parallel.sh
-+++ b/src/env_parallel.sh
-@@ -400,7 +400,7 @@ _parset_main() {
+--- parallel.orig/src/env_parallel.sh
++++ parallel/src/env_parallel.sh
+@@ -611,7 +611,7 @@
  	echo "Web site: https://www.gnu.org/software/parallel"
  	echo
  	echo "When using programs that use GNU Parallel to process data for publication"
@@ -77,9 +84,9 @@ Last-Update: 2021-08-28
  	echo
  	return 255
      fi
---- a/src/env_parallel.zsh
-+++ b/src/env_parallel.zsh
-@@ -365,7 +365,7 @@ _parset_main() {
+--- parallel.orig/src/env_parallel.zsh
++++ parallel/src/env_parallel.zsh
+@@ -611,7 +611,7 @@
  	echo "Web site: https://www.gnu.org/software/parallel"
  	echo
  	echo "When using programs that use GNU Parallel to process data for publication"
@@ -88,21 +95,29 @@ Last-Update: 2021-08-28
  	echo
  	return 255
      fi
---- a/src/parallel
-+++ b/src/parallel
-@@ -1607,7 +1607,7 @@ sub options_hash() {
- 	 # Before changing this line, please read
- 	 # https://www.gnu.org/software/parallel/parallel_design.html#Citation-notice
+--- parallel.orig/src/parallel
++++ parallel/src/parallel
+@@ -1977,11 +1977,11 @@
  	 # https://git.savannah.gnu.org/cgit/parallel.git/tree/doc/citation-notice-faq.txt
--	 "bibtex|citation" => \$opt::citation,
-+#	 "bibtex|citation" => \$opt::citation,
- 	 "wc|willcite|will-cite|nn|nonotice|no-notice" => \$opt::willcite,
+ 	 # You accept to be put in a public hall-of-shame by removing
+ 	 # these lines
+-	 ("bibtex|citation".
+-	  "[Print the citation notice and BibTeX entry for GNU parallel, ".
+-	  "silence citation notice for all future runs, and exit. ".
+-	  "It will not run any commands]"
+-	  => \$opt::citation),
++#	 ("bibtex|citation".
++#	  "[Print the citation notice and BibTeX entry for GNU parallel, ".
++#	  "silence citation notice for all future runs, and exit. ".
++#	  "It will not run any commands]"
++#	  => \$opt::citation),
+ 	 "will-cite|willcite|nn|nonotice|no-notice" => \$opt::willcite,
  	 # Termination and retries
- 	 "halt-on-error|halt=s" => \$opt::halt,
-@@ -1764,10 +1764,10 @@ sub parse_options(@) {
-     # Before changing this line, please read
-     # https://www.gnu.org/software/parallel/parallel_design.html#Citation-notice
+ 	 ('halt-on-error|haltonerror|halt=s'.
+@@ -2221,10 +2221,10 @@
+     # https://www.gnu.org/software/parallel/parallel_design.html#citation-notice
      # https://git.savannah.gnu.org/cgit/parallel.git/tree/doc/citation-notice-faq.txt
+     # You accept to be added to a public hall-of-shame by removing the lines
 -    if(defined $opt::citation) {
 -	citation(\@argv_before,\@ARGV);
 -	wait_and_exit(0);
@@ -114,19 +129,19 @@ Last-Update: 2021-08-28
      # no-* overrides *
      if($opt::nokeeporder) { $opt::keeporder = undef; }
  
-@@ -2117,7 +2117,7 @@ sub parse_options(@) {
+@@ -2618,7 +2618,7 @@
      #
-     # If you want GNU Parallel to be maintained in the future you
-     # should keep this line.
+     # If you want GNU Parallel to be maintained in the future, you
+     # should keep this line:
 -    citation_notice();
 +#    citation_notice();
-     # Seriously: _YOU_ will be harming free software by removing the
-     # notice.  _YOU_ make it harder to justify spending time developing
-     # it. If you *do* remove the line, please email
-@@ -5058,9 +5058,9 @@ sub usage() {
- 	 # Before changing this line,  please read
-          # https://www.gnu.org/software/parallel/parallel_design.html#Citation-notice
+     # This is because _YOU_ actively make it harder to justify
+     # spending time developing GNU Parallel by removing it.
+ 
+@@ -5811,9 +5811,9 @@
  	 # https://git.savannah.gnu.org/cgit/parallel.git/tree/doc/citation-notice-faq.txt
+ 	 # You accept to be put in a  public hall of shame  by removing
+ 	 # these lines
 -	 "This helps funding further development; AND IT WON'T COST YOU A CENT.",
 -	 "If you pay 10000 EUR you should feel free to use GNU Parallel without citing.",
 -	 "",
@@ -136,22 +151,21 @@ Last-Update: 2021-08-28
  	 "",);
  }
  
-@@ -5187,7 +5187,7 @@ sub version() {
+@@ -5951,7 +5951,7 @@
  	 "",
  	 "Web site: https://www.gnu.org/software/${Global::progname}\n",
  	 "When using programs that use GNU Parallel to process data for publication",
 -	 "please cite as described in 'parallel --citation'.\n",
 +	 "please cite as described in the manpage.\n",
-         );
+ 	);
  }
  
---- a/src/parallel.pod
-+++ b/src/parallel.pod
-@@ -576,33 +576,6 @@ See also: B<--fg>, B<man sem>.
+--- parallel.orig/src/parallel.pod
++++ parallel/src/parallel.pod
+@@ -679,31 +679,31 @@
  
- Implies B<--semaphore>.
- 
--
+ # You accept to be added to a public hall of shame by
+ # removing this section.
 -=item B<--bibtex>
 -
 -=item B<--citation>
@@ -173,15 +187,39 @@ Last-Update: 2021-08-28
 -feel free to use B<--will-cite> in scripts.
 -
 -If you do not want to help financing future development by letting
--other users see the citation notice or by paying, then please use
--another tool instead of GNU B<parallel>. You can find some of the
--alternatives in B<man parallel_alternatives>.
+-other users see the citation notice or by paying, then please consider
+-using another tool instead of GNU B<parallel>. You can find some of
+-the alternatives in B<man parallel_alternatives>.
 -
--
++#=item B<--bibtex>
++#
++#=item B<--citation>
++#
++#Print the citation notice and BibTeX entry for GNU B<parallel>,
++#silence citation notice for all future runs, and exit. It will not run
++#any commands.
++#
++#If it is impossible for you to run B<--citation> you can instead use
++#B<--will-cite>, which will run commands, but which will only silence
++#the citation notice for this single run.
++#
++#If you use B<--will-cite> in scripts to be run by others you are
++#making it harder for others to see the citation notice.  The
++#development of GNU B<parallel> is indirectly financed through
++#citations, so if your users do not know they should cite then you are
++#making it harder to finance development. However, if you pay 10000
++#EUR, you have done your part to finance future development and should
++#feel free to use B<--will-cite> in scripts.
++#
++#If you do not want to help financing future development by letting
++#other users see the citation notice or by paying, then please consider
++#using another tool instead of GNU B<parallel>. You can find some of
++#the alternatives in B<man parallel_alternatives>.
++#
+ 
  =item B<--block> I<size>
  
- =item B<--block-size> I<size>
-@@ -5562,9 +5535,6 @@ When using GNU B<parallel> for a publica
+@@ -4475,9 +4475,6 @@
  O. Tange (2011): GNU Parallel - The Command-Line Power Tool, ;login:
  The USENIX Magazine, February 2011:42-47.
  
@@ -191,9 +229,9 @@ Last-Update: 2021-08-28
  Copyright (C) 2007-10-18 Ole Tange, http://ole.tange.dk
  
  Copyright (C) 2008-2010 Ole Tange, http://ole.tange.dk
---- a/src/parallel_alternatives.pod
-+++ b/src/parallel_alternatives.pod
-@@ -3613,9 +3613,6 @@ When using GNU B<parallel> for a publica
+--- parallel.orig/src/parallel_alternatives.pod
++++ parallel/src/parallel_alternatives.pod
+@@ -4627,9 +4627,6 @@
  O. Tange (2011): GNU Parallel - The Command-Line Power Tool, ;login:
  The USENIX Magazine, February 2011:42-47.
  
@@ -203,9 +241,9 @@ Last-Update: 2021-08-28
  Copyright (C) 2007-10-18 Ole Tange, http://ole.tange.dk
  
  Copyright (C) 2008-2010 Ole Tange, http://ole.tange.dk
---- a/src/parallel_design.pod
-+++ b/src/parallel_design.pod
-@@ -1340,18 +1340,6 @@ and if it works, you should post it on t
+--- parallel.orig/src/parallel_design.pod
++++ parallel/src/parallel_design.pod
+@@ -1416,18 +1416,6 @@
  cost work and which have not been tested are, however, unlikely to be
  prioritized.
  
@@ -224,9 +262,9 @@ Last-Update: 2021-08-28
  
  =head1 Ideas for new design
  
---- a/src/parallel_tutorial.pod
-+++ b/src/parallel_tutorial.pod
-@@ -2993,9 +2993,6 @@ Output:
+--- parallel.orig/src/parallel_tutorial.pod
++++ parallel/src/parallel_tutorial.pod
+@@ -2998,9 +2998,6 @@
    
      O. Tange (2011): GNU Parallel - The Command-Line Power Tool,
      ;login: The USENIX Magazine, February 2011:42-47.
@@ -236,7 +274,7 @@ Last-Update: 2021-08-28
  
  When asking for help, always report the full output of this:
  
-@@ -3013,7 +3010,7 @@ Output:
+@@ -3018,7 +3015,7 @@
    Web site: https://www.gnu.org/software/parallel
    
    When using programs that use GNU Parallel to process data for publication
@@ -245,7 +283,7 @@ Last-Update: 2021-08-28
  
  In scripts B<--minversion> can be used to ensure the user has at least
  this version:
-@@ -3026,38 +3023,6 @@ Output:
+@@ -3031,38 +3028,6 @@
    20160322
    Your version is at least 20130722.
  
@@ -284,7 +322,7 @@ Last-Update: 2021-08-28
    
  With B<--max-line-length-allowed> GNU B<parallel> will report the maximal
  size of the command line:
-@@ -3150,7 +3115,7 @@ If you use GNU B<parallel> for research:
+@@ -3155,7 +3120,7 @@
  
  =item *
  
@@ -293,9 +331,9 @@ Last-Update: 2021-08-28
  
  =back
  
---- a/src/parset.pod
-+++ b/src/parset.pod
-@@ -195,9 +195,6 @@ When using GNU B<parallel> for a publica
+--- parallel.orig/src/parset.pod
++++ parallel/src/parset.pod
+@@ -195,9 +195,6 @@
  O. Tange (2011): GNU Parallel - The Command-Line Power Tool, ;login:
  The USENIX Magazine, February 2011:42-47.
  
@@ -305,69 +343,68 @@ Last-Update: 2021-08-28
  Copyright (C) 2007-10-18 Ole Tange, http://ole.tange.dk
  
  Copyright (C) 2008-2010 Ole Tange, http://ole.tange.dk
---- a/src/parsort
-+++ b/src/parsort
-@@ -402,7 +402,7 @@ sub version() {
- 	 "",
- 	 "Web site: https://www.gnu.org/software/${Global::progname}\n",
- 	 "When using programs that use GNU Parallel to process data for publication",
--	 "please cite as described in 'parallel --citation'.\n",
-+	 "please cite as described in the manpage.\n",
-         );
- }
- 
---- a/src/sem
-+++ b/src/sem
-@@ -1607,7 +1607,7 @@ sub options_hash() {
- 	 # Before changing this line, please read
- 	 # https://www.gnu.org/software/parallel/parallel_design.html#Citation-notice
+--- parallel.orig/src/sem
++++ parallel/src/sem
+@@ -1977,11 +1977,11 @@
  	 # https://git.savannah.gnu.org/cgit/parallel.git/tree/doc/citation-notice-faq.txt
--	 "bibtex|citation" => \$opt::citation,
-+	 # "bibtex|citation" => \$opt::citation,
- 	 "wc|willcite|will-cite|nn|nonotice|no-notice" => \$opt::willcite,
+ 	 # You accept to be put in a public hall-of-shame by removing
+ 	 # these lines
+-	 ("bibtex|citation".
+-	  "[Print the citation notice and BibTeX entry for GNU parallel, ".
+-	  "silence citation notice for all future runs, and exit. ".
+-	  "It will not run any commands]"
+-	  => \$opt::citation),
++#	 ("bibtex|citation".
++#	  "[Print the citation notice and BibTeX entry for GNU parallel, ".
++#	  "silence citation notice for all future runs, and exit. ".
++#	  "It will not run any commands]"
++#	  => \$opt::citation),
+ 	 "will-cite|willcite|nn|nonotice|no-notice" => \$opt::willcite,
  	 # Termination and retries
- 	 "halt-on-error|halt=s" => \$opt::halt,
-@@ -1764,10 +1764,10 @@ sub parse_options(@) {
-     # Before changing this line, please read
-     # https://www.gnu.org/software/parallel/parallel_design.html#Citation-notice
+ 	 ('halt-on-error|haltonerror|halt=s'.
+@@ -2221,10 +2221,10 @@
+     # https://www.gnu.org/software/parallel/parallel_design.html#citation-notice
      # https://git.savannah.gnu.org/cgit/parallel.git/tree/doc/citation-notice-faq.txt
+     # You accept to be added to a public hall-of-shame by removing the lines
 -    if(defined $opt::citation) {
 -	citation(\@argv_before,\@ARGV);
 -	wait_and_exit(0);
 -    }
-+    # if(defined $opt::citation) {
-+    #     citation(\@argv_before,\@ARGV);
-+    #     wait_and_exit(0);
-+    # }
++#    if(defined $opt::citation) {
++#	citation(\@argv_before,\@ARGV);
++#	wait_and_exit(0);
++#    }
      # no-* overrides *
      if($opt::nokeeporder) { $opt::keeporder = undef; }
  
-@@ -2117,7 +2117,7 @@ sub parse_options(@) {
+@@ -2618,7 +2618,7 @@
      #
-     # If you want GNU Parallel to be maintained in the future you
-     # should keep this line.
+     # If you want GNU Parallel to be maintained in the future, you
+     # should keep this line:
 -    citation_notice();
-+    # citation_notice();
-     # Seriously: _YOU_ will be harming free software by removing the
-     # notice.  _YOU_ make it harder to justify spending time developing
-     # it. If you *do* remove the line, please email
-@@ -5058,8 +5058,8 @@ sub usage() {
- 	 # Before changing this line,  please read
-          # https://www.gnu.org/software/parallel/parallel_design.html#Citation-notice
++#    citation_notice();
+     # This is because _YOU_ actively make it harder to justify
+     # spending time developing GNU Parallel by removing it.
+ 
+@@ -5811,9 +5811,9 @@
  	 # https://git.savannah.gnu.org/cgit/parallel.git/tree/doc/citation-notice-faq.txt
+ 	 # You accept to be put in a  public hall of shame  by removing
+ 	 # these lines
 -	 "This helps funding further development; AND IT WON'T COST YOU A CENT.",
 -	 "If you pay 10000 EUR you should feel free to use GNU Parallel without citing.",
-+	 # "This helps funding further development; AND IT WON'T COST YOU A CENT.",
-+	 # "If you pay 10000 EUR you should feel free to use GNU Parallel without citing.",
- 	 "",
+-	 "",
++#	 "This helps funding further development; AND IT WON'T COST YOU A CENT.",
++#	 "If you pay 10000 EUR you should feel free to use GNU Parallel without citing.",
++#	 "",
  	 "",);
  }
-@@ -5187,7 +5187,7 @@ sub version() {
+ 
+@@ -5951,7 +5951,7 @@
  	 "",
  	 "Web site: https://www.gnu.org/software/${Global::progname}\n",
  	 "When using programs that use GNU Parallel to process data for publication",
 -	 "please cite as described in 'parallel --citation'.\n",
 +	 "please cite as described in the manpage.\n",
-         );
+ 	);
  }
  

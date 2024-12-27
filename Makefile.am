@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2002-2021 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
+# SPDX-FileCopyrightText: 2002-2022 Ole Tange, http://ole.tange.dk and Free Software and Foundation, Inc.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -9,6 +9,8 @@ test:
 
 web:
 	cd src; make web
+	cp -r src/*.pdf src/sphinx/build/html/* ../parallel-web/parallel
+	cp ../parallel-web/parallel/parallel.html  ../parallel-web/parallel/man.html
 
 upload:
 	eval `gpg-agent --daemon`
@@ -52,13 +54,17 @@ upload:
 	gpg --auto-key-locate keyserver --keyserver-options auto-key-retrieve parallel-latest.tar.bz2.sig
 	gpg --auto-key-locate keyserver --keyserver-options auto-key-retrieve parallel-$(YYYYMMDD).tar.bz2.sig
 
-	../ftpsync/src/ftpsync parallel-$(YYYYMMDD).tar.bz2{,.sig,*asc} ftp://ftp-upload.gnu.org/incoming/ftp/
-	../ftpsync/src/ftpsync parallel-latest.tar.bz2{,.sig,*asc} ftp://ftp-upload.gnu.org/incoming/ftp/
+# 	"|| true" needed if already uploaded
+	eval p=parallel-latest.tar.bz2{,.sig}; lftp -e "put $$p; bye" ftp://ftp-upload.gnu.org/incoming/ftp/ || true
+	eval p=parallel-$(YYYYMMDD).tar.bz2{,.sig}; lftp -e "put $$p; bye" ftp://ftp-upload.gnu.org/incoming/ftp/ || true
+
+#	../ftpsync/src/ftpsync parallel-$(YYYYMMDD).tar.bz2{,.sig,*asc} ftp://ftp-upload.gnu.org/incoming/ftp/
+#	../ftpsync/src/ftpsync parallel-latest.tar.bz2{,.sig,*asc} ftp://ftp-upload.gnu.org/incoming/ftp/
 
 # This can take 7 minutes
 	pushd /tmp; \
 	rm -rf /tmp/parallel-$(YYYYMMDD)*; \
-	while ! wget https://ftp.gnu.org/gnu/parallel/parallel-$(YYYYMMDD).tar.bz2 ; do sleep 2; done; \
+	while ! wget https://ftp.gnu.org/gnu/parallel/parallel-$(YYYYMMDD).tar.bz2 ; do sleep 10; done; \
 	tar xjvf parallel-$(YYYYMMDD).tar.bz2; \
 	cd parallel-$(YYYYMMDD); \
 	./configure; \
@@ -145,7 +151,7 @@ reuse:
 
 testurls:
 	mkdir -p urls
-	cd urls && grep -v '(dead)' ../src/* | grep -h -Po 'https?://[^ $$<>")}]+' | perl -pe 's/(&gt|\{).*//;s/\\-/-/g;s/\\n//g;s/&amp;/&/g;s/&#.*//;'"s/'.*//" | grep -Ev 'parallel-(20)?$$|coolwebsite.biz' | sort -u | egrep -v 'example.com|##|\*\(' | parallel -j0 --timeout 33 --bar --tag --joblog joblog --retries 3 neno wget -m -l1 -Q1 '{=$$_=Q($$_)=}'
+	cd urls && ../src/testurls
 
 reconf:
 	rm -fr autom4te.cache aclocal.m4 config.h config.h.in config.log Makefile.in missing install-sh
@@ -167,5 +173,26 @@ pack_unpack_and_test_build:
 	cd parallel-$(YYYYMMDD) && \
 	./configure && make -j && sudo make -j install
 
+# This ought to be correct, but fails on Centos
+# bashcompletiondir=$(DESTDIR)${datarootdir}/bash-completion/completions
+# zshcompletiondir=$(DESTDIR)${datarootdir}/zsh/site-functions
+bashcompletiondir=$(DESTDIR)${prefix}/share/bash-completion/completions
+zshcompletiondir=$(DESTDIR)${prefix}/share/zsh/site-functions
+bashcompletion=${bashcompletiondir}/parallel
+zshcompletion=${zshcompletiondir}/_parallel
+install-data-hook:
+	mkdir -p ${zshcompletiondir} ${bashcompletiondir}
+	$(DESTDIR)$(bindir)/parallel --shell-completion bash > ${bashcompletion}
+# Make zsh eval the --shell-completion code dynamically so if
+# a newer version of GNU Parallel is installed by a normal
+# user, this newer version will generate the
+# --shell-completion code.
+	echo '#compdef parallel' > ${zshcompletion}
+	echo '(( $$+functions[_comp_parallel] )) ||' >> ${zshcompletion}
+	echo '  eval "$$(parallel --shell-completion auto)" &&' >> ${zshcompletion}
+	echo '  _comp_parallel' >> ${zshcompletion}
 
-EXTRA_DIST = CITATION CREDITS LICENSES/CC-BY-SA-4.0.txt LICENSES/GFDL-1.3-or-later.txt LICENSES/GPL-3.0-or-later.txt
+uninstall-hook:
+	rm -rf ${zshcompletiondir} ${bashcompletiondir}
+
+EXTRA_DIST = CITATION CITATION.cff CREDITS LICENSES/CC-BY-SA-4.0.txt LICENSES/GFDL-1.3-or-later.txt LICENSES/GPL-3.0-or-later.txt
